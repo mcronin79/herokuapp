@@ -2,7 +2,7 @@ from bokeh.layouts import layout
 from bokeh.models.widgets import Tabs, Panel
 from bokeh.io import curdoc
 from bokeh.plotting import figure
-from bokeh.layouts import column
+from bokeh.layouts import gridplot, column
 from bokeh.models import CustomJS, Slider, ColumnDataSource, Range1d, LinearAxis, Legend
 from bokeh.plotting import figure, output_file, output_notebook, show
 import gspread
@@ -301,8 +301,8 @@ CO2_fig = plot_CO2()
 #show(n)
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-#l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
-#l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
+l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
+l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
