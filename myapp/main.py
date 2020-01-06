@@ -23,8 +23,7 @@ tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
 
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    r'C:\Users\rkenzie\AppData\Roaming\gspread_pandas\google_secret.json', scope) # Your json file here
+credentials = ServiceAccountCredentials.from_json_keyfile_name('myapp/data/sheets_token.json', scope) # Your json file here
 
 gc = gspread.authorize(credentials)
 
