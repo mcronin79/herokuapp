@@ -10,3 +10,7 @@ scipy==1.0.1
 tornado==5.0.1
 gspread
 oauth2client
+plotly
+plotly.figure_factory
+cufflinks
+scipy.ndimage.filters
