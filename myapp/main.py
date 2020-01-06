@@ -1,170 +1,316 @@
-# -*- coding: utf-8 -*-
-
-##Interactive bokeh for cross location selection
-
-## Updated with regression line on 29 Apr 18
-import numpy as np
-import pandas as pd
-from bokeh.io import curdoc,show
-from bokeh.layouts import row,column, widgetbox
-from bokeh.models import ColumnDataSource,LabelSet,Div,Paragraph,PointDrawTool,PolyDrawTool,PolyEditTool,PolySelectTool,CustomJS
-from bokeh.models.widgets import Slider, TextInput,Button,CheckboxGroup,CheckboxButtonGroup,RadioGroup,Select,DataTable, TableColumn
+from bokeh.layouts import layout
+from bokeh.models.widgets import Tabs, Panel
+from bokeh.io import curdoc
 from bokeh.plotting import figure
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
+from bokeh.layouts import grid, gridplot, column
+from bokeh.models import CustomJS, Slider, ColumnDataSource, Range1d, LinearAxis, Legend
+from bokeh.plotting import figure, output_file, output_notebook, show
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
+import plotly as py
+import cufflinks as cf
+import plotly.figure_factory as ff
+import scipy.ndimage.filters as filters
+from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
+py.offline.init_notebook_mode(connected=True)
+cf.go_offline()
+
+output_file('dashboard.html')
+
+tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
+
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+
+credentials = ServiceAccountCredentials.from_json_keyfile_name(
+    r'C:\Users\rkenzie\AppData\Roaming\gspread_pandas\google_secret.json', scope) # Your json file here
+
+gc = gspread.authorize(credentials)
+
+wks = gc.open('MyHiveDataSheet').sheet1
+
+data = wks.get_all_values()
+headers = data.pop(0)
+
+df = pd.DataFrame(data, columns=headers)
+
+df.columns = [c.replace(" ","_") for c in df.columns]
+skinned_headers = df.dtypes.index
+
+str_temperature = df['Temperature']
+str_rtd_temperature = df['RTD_Temperature']
+str_humidity = df['Humidity']
+str_weight1 = df['Weight1']
+str_weight2 = df['Weight2']
+str_weight3 = df['Weight3']
+str_weight4 = df['Weight4']
+str_loadcell_1 = df['Load_Cell1']
+str_loadcell_2 = df['Load_Cell2']
+str_loadcell_3 = df['Load_Cell3']
+str_loadcell_4 = df['Load_Cell4']
+str_vusb = df['VUSB']
+str_weight_code = df['Weight_Code']
+str_CO2 = df['CO2']
+
+df['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
+df['Temperature'] = df['Temperature'].astype(float)
+df['RTD_Temperature'] = df['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
+df['Humidity'] = df['Humidity'].astype(float)
+
+df['O02'] = df['CO2'].astype(int)
+df['Weight_Code'] = df['Weight_Code'].astype(int)
+
+df['Load_Cell1'] = df['Load_Cell1'].astype(float)
+df['Load_Cell2'] = df['Load_Cell2'].astype(float)
+df['Load_Cell3'] = df['Load_Cell3'].astype(float)
+df['Load_Cell4'] = df['Load_Cell4'].astype(float)
+
+df['VUSB'] = df['VUSB'].astype(float)
+
+non_z_weights = df.query('Load_Cell1 != 0 & Load_Cell2 != 0 & Load_Cell3 != 0 & Load_Cell4 != 0')
+print(non_z_weights.head())
+
+# todo: add grid to plot
+time = df['Timestamp']
+temperature = df['Temperature']
+rtd_temperature = df['RTD_Temperature']
+humidity = df['Humidity']
+time_for_weight = non_z_weights['Timestamp'] # drop times where weight is recoded as zero
 
 
-import scipy.spatial as spatial
+def plot_temperature():
+    p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, str_temperature, color='magenta', legend='Temperature')
+    p.line(time, str_rtd_temperature, color='green', legend='RTD_Temperature')
 
-df = pd.read_csv('myapp/data/crosses_updated.csv')
-headers = ["cross_id", "x", "y","pass_end_x", "pass_end_y"]
-crosses = pd.DataFrame(df, columns=headers)
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Temperature (°C)'
 
+    return p
 
-dx=crosses.x
-dy=crosses.y
+def plot_CO2():
+    p = figure(title="CO2 ppm", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, df['CO2'].astype(int), color='blue')
 
-rx=[]
-ry=[]
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'CO2 (ppm)'
 
-source = ColumnDataSource({
-    'x': [80], 'y': [9], 'color': ['dodgerblue']
-})
+    return p
 
-ix = source.data['x']
-iy = source.data['y']
-points = np.array(crosses[['x','y']])
+voltage1_fx = filters.gaussian_filter1d(df['Load_Cell1'], sigma=100)
+voltage2_fx = filters.gaussian_filter1d(df['Load_Cell2'], sigma=100)
+voltage3_fx = filters.gaussian_filter1d(df['Load_Cell3'], sigma=100)
+voltage4_fx = filters.gaussian_filter1d(df['Load_Cell4'], sigma=100)
 
-t1 = np.vstack((ix, iy)).T
-t2=np.vstack((crosses.x,crosses.y)).T
+def plot_loadcell_voltages():
+    p = figure(title="Load Cell Voltages", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, df['Load_Cell1'], color='blue')#, legend='Load Cell 1')
+    p.line(time, df['Load_Cell2'], color='red')#, legend='Load Cell 2')
+    p.line(time, df['Load_Cell3'], color='green')#, legend='Load Cell 3')
+    p.line(time, df['Load_Cell4'], color='orange')#, legend='Load Cell 4')
+    p.line(time, voltage1_fx, color='black')
+    p.line(time, voltage2_fx, color='black')
+    p.line(time, voltage3_fx, color='black')
+    p.line(time, voltage4_fx, color='black')
 
-point_tree = spatial.cKDTree(t2)
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Voltage (V)'
 
-ax=(point_tree.query_ball_point(t1, 3)).tolist()
-
-cx=crosses.pass_end_x[ax[0]]
-cy=crosses.pass_end_y[ax[0]]
-size=1
-
-source2 = ColumnDataSource({
-    'cx': [cx], 'cy': [cy]
-})
-
-source_reg = ColumnDataSource({
-    'rx': [], 'ry': []
-})
-
-source2 = ColumnDataSource(data=dict(cx=cx,cy=cy))
-source_reg = ColumnDataSource(data=dict(rx=rx,ry=ry))
-
-# Set up plot
-
-plot = figure(plot_height=500, plot_width=700,
-              tools="save",
-              x_range=[0,100], y_range=[0,100],toolbar_location="below")
-plot.image_url(url=["myapp/static/images/base.png"],x=0,y=0,w=100,h=100,anchor="bottom_left")
-
-
-plot.hex('cx','cy',source=source2,size=15,fill_color='#95D7FF',line_color='#584189',line_width=2,alpha=1)
-
-st=plot.scatter('x','y',source=source,size=15,fill_color='orangered',line_color='black',line_width=2)
-
-plot.xgrid.grid_line_color = None
-plot.ygrid.grid_line_color = None
-plot.axis.visible=False
-
-draw_tool = PointDrawTool(renderers=[st])
-draw_tool.add=False
-columns = [
-    #TableColumn(field="x", title="x"),
-   # TableColumn(field="y", title="y")
-]
-
-data_table = DataTable(
-    source=source,
-    #columns=columns,
-    index_position=None,
-    width=800,
-    editable=False,
-)
-
-
-def linear_regression(cx,cy):
-    """Calculate the linear regression and r2 score"""
-    model = LinearRegression()
-    model.fit(cx[:,np.newaxis],cy)
-    #Get the x- and y-values for the best fit line
-    x_plot = np.linspace(50,100)
-    y_plot = model.predict(x_plot[:,np.newaxis])
-    #Calculate the r2 score
-    r2 = r2_score(cy,model.predict(cx[:,np.newaxis]))
-    #Position for the r2 text annotation
-    r2_x = [-cx + 0.1*cx]
-    r2_y = [cx - 0.1*cx]
-    text = ["R^2 = %02f" % r2]
-    return x_plot,y_plot, r2, r2_x, r2_y, text
-
-x_plot, y_plot, r2, r2_x, r2_y, text = linear_regression(cx,cy)
-text_source = ColumnDataSource(dict(x=[52], y=[3], text=text)) #R2 value
-line_source = ColumnDataSource(data=dict(x=x_plot, y=y_plot)) #Regression line
-
-reg_line=plot.line('x', 'y', source = line_source, color = 'black',line_width=0,line_alpha=0,line_cap="round")
-glyph = LabelSet(x="x", y="y", text="text", text_color="white",source=text_source)
-plot.add_layout(glyph)
-
-def on_change_data_source(attr, old, new):
-    ix = source.data['x']
-    iy = source.data['y']
-
-    t1 = np.vstack((ix, iy)).T
-    t2 = np.vstack((crosses.x, crosses.y)).T
-
-    point_tree = spatial.cKDTree(t2)
-
-    ax = (point_tree.query_ball_point(t1, 3)).tolist()
-    cx = crosses.pass_end_x[ax[0]]
-    cy = crosses.pass_end_y[ax[0]]
-    x_plot, y_plot, r2, r2_x, r2_y, text = linear_regression(cx,cy)
-
-
-    text_source.data = dict(x=[52], y=[3], text = text)
-
-    line_source.data = dict(x=x_plot, y=y_plot)
-    source2.data=dict(cx=cx,cy=cy)
-    # plot.scatter('cx','cy',source=source2)
-
-source.on_change('data', on_change_data_source)
-
-checkbox=CheckboxButtonGroup(labels=["Show Regression Plot"],button_type = "danger")
-
-checkbox.callback = CustomJS(args=dict(l0=reg_line,l1=glyph, checkbox=checkbox), code="""
-l0.visible = 0 in checkbox.active;
-l1.visible = 0 in checkbox.active;
-l0.glyph.line_width = 3;
-l0.glyph.line_alpha=1;
-l1.text_color="black";
-""")
+    return p
 
 
 
-plot.add_tools(draw_tool)
-plot.toolbar.active_tap = draw_tool
-div = Div(text="""<b><h>WHERE DO TEAMS CROSS?</b></h></br></br>Interactive tool to get cross end locations based on user input. The tool uses <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.htmlL">cKDTree</a> 
-to calculate the nearest cross start locations and plots the corresponding end locations<br></br>
-<br>Created by <b><a href="https://twitter.com/Samirak93">Samira Kumar</a></b> using bokeh</br>""",
-width=550, height=110)
+def plot_voltages_smooth():
+    p = figure(title="Voltages Smooth", title_location="above", x_axis_type='datetime', tools=tools,
+               toolbar_location="above")
+    p.line(time, voltage1_fx, color='blue', legend='Voltage 1 Smooth')
+    p.line(time, voltage2_fx, color='red', legend='Voltage 2 Smooth')
+    p.line(time, voltage3_fx, color='green', legend='Voltage 3 Smooth')
+    p.line(time, voltage4_fx, color='orange', legend='Voltage 4 Smooth')
 
-div_help = Div(text="""<b><h>INSTRUCTIONS</b></h></br></br>Click on the below icon, in the bottom of the viz, to enable the option to drag the red circle.<br></br>
-<img src="https://bokeh.pydata.org/en/latest/_images/PointDraw.png" alt="Point Draw Tool">
-<br></br> 
-The crosses, which have started, from within 3 units of the red circle are collected and their corresponding end locations are plotted in blue 
-<br><b><a href="https://samirak93.github.io/analytics/projects/proj-1.html">Blog Post</a></br>""",
-width=400, height=100)
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Voltage (V)'
+
+    return p
+
+loadcell1_fx = filters.gaussian_filter1d(df['Load_Cell1']-df['Load_Cell1'].mean(), sigma=100)
+loadcell2_fx = filters.gaussian_filter1d(df['Load_Cell2']-df['Load_Cell2'].mean(), sigma=100)
+loadcell3_fx = filters.gaussian_filter1d(df['Load_Cell3']-df['Load_Cell3'].mean(), sigma=100)
+loadcell4_fx = filters.gaussian_filter1d(df['Load_Cell4']-df['Load_Cell4'].mean(), sigma=100)
+usb_fx = filters.gaussian_filter1d(df['VUSB'] - df['VUSB'].mean(), sigma=100)
+
+def plot_loadcell_voltages_ac():
+    p = figure(title="Load Cell Voltages AC Only", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    #p.line(time, df['Load_Cell1']-df['Load_Cell1'].mean(), color='blue')#, legend='Load Cell 1')
+    #p.line(time, df['Load_Cell2']-df['Load_Cell2'].mean(), color='red')#, legend='Load Cell 2')
+    #p.line(time, df['Load_Cell3']-df['Load_Cell3'].mean(), color='green')#, legend='Load Cell 3')
+    #p.line(time, df['Load_Cell4']-df['Load_Cell4'].mean(), color='orange')#, legend='Load Cell 4')
+    p.line(time, loadcell1_fx, color='blue')
+    p.line(time, loadcell2_fx, color='red')
+    p.line(time, loadcell3_fx, color='green')
+    p.line(time, loadcell4_fx, color='orange')
+    #p.line(time, df['VUSB'] - df['VUSB'].mean(), color='black')#, legend='VUSB')
+    p.line(time, usb_fx, color='black')  # , legend='VUSB')
+    #p.line(time, df['Temperature'] - df['Temperature'].mean(), color='magenta')#, legend='Temperature')
 
 
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Voltage (V)'
+
+    return p
+
+def plot_loadcell_voltages_and_temperature_means():
+    p = figure(title="Load Cell Voltages & Temperature Variation", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, df['Load_Cell1'] - df['Load_Cell1'].mean(), color='blue')  # , legend='Load Cell 1')
+    p.line(time, df['Load_Cell2'] - df['Load_Cell2'].mean(), color='red')  # , legend='Load Cell 2')
+    p.line(time, df['Load_Cell3'] - df['Load_Cell3'].mean(), color='green')  # , legend='Load Cell 3')
+    p.line(time, df['Load_Cell4'] - df['Load_Cell4'].mean(), color='orange')  # , legend='Load Cell 4')
+    p.line(time, df['VUSB'] - df['VUSB'].mean(), color='black')  # , legend='VUSB')
+
+    p.yaxis.axis_label = 'Voltage (V)'
+    lc1 = df['Load_Cell1'] - df['Load_Cell1'].mean()
+    lc2 = df['Load_Cell2'] - df['Load_Cell2'].mean()
+    lc3 = df['Load_Cell3'] - df['Load_Cell3'].mean()
+    lc4 = df['Load_Cell4'] - df['Load_Cell4'].mean()
+
+    #p.y_range = Range1d((df['Load_Cell1'] - df['Load_Cell1'].mean()).min(), (df['Load_Cell1'] - df['Load_Cell1'].mean()).max())  # SECOND AXIS, y_range is temperature_range, fixed attribute
+    p.y_range = Range1d(pd.DataFrame([lc1, lc2, lc3, lc4]).values.min()*1.1, pd.DataFrame([lc1, lc2, lc3, lc4]).values.max()*1.1)  # SECOND AXIS, y_range is temperature_range, fixed attribute
+    temperature_range = 'blah'
+    a = df['Temperature'] - df['Temperature'].mean()
+    p.extra_y_ranges = {
+        temperature_range: Range1d(a.min()*1.1, a.max()*1.1)
+    }
+    p.add_layout(LinearAxis(y_range_name=temperature_range, axis_label='Temperature (°C)'), 'right')
+
+    p.line(time, a, y_range_name=temperature_range, color="magenta")#, legend='Temperature')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    #p.legend.location = 'bottom_right'
+
+    return p
+
+def plot_humidity():
+    p = figure(title="Humidity", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, str_humidity, color='cyan', legend='Humidity')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Humidity (%)'
+
+    return p
+
+def plot_temp_and_humidity():
+    p = figure(title="Temperature & Humidity", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, str_temperature,  color="magenta", legend='Temperature')
+    p.line(time, str_rtd_temperature, color='green', legend='RTD_Temperature')
+
+    p.yaxis.axis_label = 'Temperature (°C)'
+    p.y_range = Range1d(temperature.min()-0.1, temperature.max()+0.1)  # SECOND AXIS, y_range is temperature_range, fixed attribute
+    humidity_range = 'blah'
+    p.extra_y_ranges = {
+        humidity_range: Range1d(humidity.min()*0.975, humidity.max()*1.025)
+    }
+    p.add_layout(LinearAxis(y_range_name=humidity_range, axis_label='Humidity (%)'), 'right')
+
+    p.line(time, str_humidity, y_range_name=humidity_range, color="cyan", legend='Humidity')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.legend.location = 'bottom_right'
+
+    return p
+
+weights = ['Weight1', 'Weight2', 'Weight3', 'Weight4']
+
+def plot_4weight_bar():
+    p = figure(title="Load Cell Weights", title_location="above", x_range=weights, plot_height=250)
+    p.vbar(x=weights, top=[5, 3, 4, 2, 4, 6], width=0.9)
+
+    p.xgrid.grid_line_color = None
+    p.y_range.start = 0
+
+    return p
+
+def plot_weight():
+    p = figure(title='Weight', title_location="above", x_axis_type='datetime', tools=tools, toolbar_location='above')
+    offset = 15421626
+    slope = 8.01888E-07
+
+    weight = []
+    for w in df['Weight_Code']:
+        value = (w - offset) * slope * 1000
+        weight.append(value)
+
+    weight_fx = filters.gaussian_filter1d(weight, sigma=50)
+
+    p.line(time, weight, color='red', legend='Weight')
+    p.line(time, weight_fx, color='black', legend='Weight Smooth')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Weight (Kg)'
+
+    return p
+
+def histoplot(file,col,title):
+    data = []
+    group_labels = []
+    for i in col:
+        trace = list(file.iloc[:][str(i)])
+        label = str(i)
+        data.append(trace)
+        group_labels.append(label)
+    fig = ff.create_distplot(data, group_labels, bin_size=0, curve_type='kde',
+                                     colors=None, rug_text=None, histnorm='probability density',
+                                     show_hist=False, show_curve=True, show_rug=True)
+
+    py.offline.plot(fig, filename=str(title)+'.html')
 
 
-layout=(column(div,checkbox,row(plot,column(div_help)),data_table))
-curdoc().add_root(layout)
-curdoc().title = "Where do teams cross?"
+#histoplot(df, ['Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4'], 'load cell voltages')
+#histoplot(df, ['Temperature', 'RTD_Temperature'], 'temperatures')
+#histoplot(df, ['Humidity'], 'humidity')
 
+temperature_fig = plot_temperature()
+humidity_fig = plot_humidity()
+temp_and_hum_fig = plot_temp_and_humidity()
+load_cell_voltages_fig = plot_loadcell_voltages()
+load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+weight_fig = plot_weight()
+CO2_fig = plot_CO2()
+
+#n = gridplot([[weight_fig, temp_and_hum_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
+# n = gridplot([[temperature_fig, temp_and_hum_fig], [humidity_fig, weights_line_fig]], sizing_mode='stretch_both')
+
+#show(n)
+
+#l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
+l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
+l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
+
+tab1 = Panel(child=l1,title="Air Quality")
+tab2 = Panel(child=l2,title="Metrics")
+tabs = Tabs(tabs=[ tab1, tab2 ])
+
+show(tabs)
+
+import matplotlib.pyplot as plt
+plt.plot(time, df['CO2'].astype(int), color='blue')
+#plt.show()
