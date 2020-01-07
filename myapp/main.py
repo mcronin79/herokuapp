@@ -355,7 +355,7 @@ def make_plot(src, col):
                fill_color='color',
                line_color='black',
                fill_alpha=0.75,
-               legend_label=i,
+               label=i,
                hover_fill_alpha=1.0,
                hover_fill_color='red')
 
