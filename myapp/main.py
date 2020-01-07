@@ -1,5 +1,6 @@
 from bokeh.io import curdoc
 from bokeh.plotting import figure, ColumnDataSource
+import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -13,6 +14,14 @@ wks = gc.open('MyHiveDataSheet').sheet1
 data = wks.get_all_values()
 headers = data.pop(0)
 print(headers)
+
+df = pd.DataFrame(data, columns=headers)
+
+print(" ")
+print("here")
+print(" ")
+print(df.shape)
+print(len(df.index))
 
 fig = figure(title='Line plot!', sizing_mode='scale_width')
 fig.line(x=[1, 2, 3], y=[1, 4, 9])
