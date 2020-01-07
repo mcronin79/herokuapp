@@ -89,7 +89,7 @@ fig = figure(title='Line plot!', sizing_mode='scale_width')
 fig.line(x=[1, 2, 3], y=[1, 4, 9])
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-#l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
+l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 #l2 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 
 #tab1 = Panel(child=l1,title="Air Quality")
@@ -97,4 +97,4 @@ fig.line(x=[1, 2, 3], y=[1, 4, 9])
 #tabs = Tabs(tabs=[ tab1, tab2 ])
 
 curdoc().title = "Hello, world!"
-curdoc().add_root(temperature_fig)
+curdoc().add_root(l1)
