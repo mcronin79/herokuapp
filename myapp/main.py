@@ -8,6 +8,7 @@ from bokeh.layouts import gridplot, layout, row, WidgetBox
 import pandas as pd
 import gspread
 import math
+import os
 import numpy as np
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
@@ -16,7 +17,12 @@ tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
 
 scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
-credentials = ServiceAccountCredentials.from_json_keyfile_name('myapp/data/sheets_token.json', scope) # Your json file here
+json_creds = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
+
+creds_dict = json.loads(json_creds)
+creds_dict["private_key"] = creds_dict["private_key"].replace("\\\\n", "\n")
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scopes)
+credentials = ServiceAccountCredentials.from_json_keyfile_name(creds_dict, scope) # Your json file here
 gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
 data = wks.get_all_values()
@@ -415,10 +421,8 @@ p = make_plot(src, initial_loadcells)
 controls = WidgetBox(loadcell_selection, binwidth_select, range_select)
 
 # Create a row layout
-layout = row(controls, p)
+l3 = row(controls, p)
 
-# Make a tab with the layout
-tab3 = Panel(child=layout, title='Delay Histogram')
 
 
 
@@ -432,6 +436,8 @@ l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, v
 
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
+# Make a tab with the layout
+tab3 = Panel(child=l3, title='Delay Histogram')
 tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
 
 curdoc().title = "Hello, world!"
