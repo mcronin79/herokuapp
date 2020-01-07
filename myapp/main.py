@@ -1,10 +1,14 @@
 from bokeh.io import curdoc
-from bokeh.plotting import figure, ColumnDataSource
-from bokeh.models.widgets import Tabs, Panel
-from bokeh.models import Range1d, LinearAxis
+from bokeh.palettes import Spectral6
+from bokeh.plotting import figure
+from bokeh.models.widgets import Tabs, Panel, CheckboxGroup, Slider, RangeSlider
+from bokeh.models import Range1d, LinearAxis, ColumnDataSource
+from bokeh.application.handlers import FunctionHandler
 from bokeh.layouts import gridplot, layout
 import pandas as pd
 import gspread
+import math
+import numpy as np
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
@@ -268,17 +272,143 @@ voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
 weight_fig = plot_weight()
 CO2_fig = plot_CO2()
 
-fig1 = figure(title='Line plot 1!', sizing_mode='scale_width')
-fig1.line(x=[1, 2, 3], y=[1, 4, 9])
 
-fig2 = figure(title='Line plot 2!', sizing_mode='scale_width')
-fig2.line(x=[1, 2, 3], y=[1, 4, 9])
 
-fig3 = figure(title='Line plot 3!', sizing_mode='scale_width')
-fig3.line(x=[1, 2, 3], y=[1, 4, 9])
 
-fig4 = figure(title='Line plot 4!', sizing_mode='scale_width')
-fig4.line(x=[1, 2, 3], y=[1, 4, 9])
+def style(p):
+    p.title.align = 'center'
+    p.title.text_font_size = '18pt'
+    p.xaxis.axis_label_text_font_size = '12pt'
+    p.xaxis.major_label_text_font_size = '12pt'
+    p.yaxis.axis_label_text_font_size = '12pt'
+    p.yaxis.major_label_text_font_size = '12pt'
+
+    return p
+
+def make_dataset(tidy_data, range_start, range_end, bin_width):
+    by_loadcell = pd.DataFrame(columns=['count', 'left', 'right',
+                                       'v_count', 'v_interval', 'color'])
+    print('by_loadcell is:', by_loadcell)
+    print('tidy_data is:', tidy_data)
+
+    print(range_start)
+    print(range_end)
+    print(bin_width)
+
+    for i, j in enumerate(tidy_data['variable'].unique()):
+        x_min = (math.ceil(min(tidy_data[tidy_data['variable'] == j]['value']) * 1000) - 1) / 1000
+        x_max = (math.ceil(max(tidy_data[tidy_data['variable'] == j]['value']) * 1000) + 1) / 1000
+
+        range_extent = x_max - x_min
+
+        print('x_min:', x_min)
+        print('x_max:', x_max)
+        #print(tidy_data['variable']==i)
+        # Check to make sure the start is less than the end!
+        assert x_min < x_max, "Start must be less than end!"
+
+        tidy_data_hist, edges = np.histogram(tidy_data[tidy_data['variable'] == j]['value'], bins=int(range_extent / bin_width), range=[range_start, range_end])
+        # Put the information in a dataframe
+        by_load_cell_df = pd.DataFrame({'count': tidy_data_hist,
+                                     j: tidy_data_hist,
+                                     'left': edges[:-1],
+                                     'right': edges[1:]})
+        by_load_cell_df['v_count'] = ['%d hits' % count for count in by_load_cell_df['count']]
+        by_load_cell_df['v_interval'] = ['%f to %f V' % (left, right) for left, right in zip(by_load_cell_df['left'], by_load_cell_df['right'])]
+        # Color each loadcell differently
+        by_load_cell_df['color'] = Spectral6[i]
+
+        print('by_load_cell columns:', by_load_cell_df.columns)
+
+        by_loadcell = by_loadcell.append(by_load_cell_df)
+
+    return ColumnDataSource(by_loadcell)
+
+def make_plot(src, col):
+    # Blank plot with correct labels
+    p = figure(plot_width=700,
+               plot_height=700,
+               title='Histogram of Voltages',
+               x_axis_label='Voltage (V)',
+               y_axis_label='Number of Readings')
+
+    for i in col:
+        # Quad glyphs to create a histogram
+        p.quad(source=src,
+               bottom=0,
+               top='count',
+               left='left',
+               right='right',
+               fill_color='color',
+               line_color='black',
+               fill_alpha=0.75,
+               legend_label=i,
+               hover_fill_alpha=1.0,
+               hover_fill_color='red')
+
+    # Hover tool with vline mode
+    hover = HoverTool(tooltips=[('# of Voltages', '@v_count'),
+                                ('Bin', '@v_interval')],
+                      mode='vline')
+
+    p.add_tools(hover)
+
+    p.legend.click_policy = 'hide'
+
+    # Styling
+    p = style(p)
+
+    #show(p)
+
+    return p
+
+# Update the plot based on selections
+def update(attr, old, new):
+    # print(f'Inside Updater {range_select.value} || {binwidth_select.value}')
+    loadcells_to_plot = [loadcell_selection.labels[i] for i in loadcell_selection.active]
+
+    #new_src = make_dataset(loadcells_to_plot,
+    # Range select indexing changed
+    new_src=make_dataset(tidy_load_cells,
+                           range_start=range_select.value[0],
+                           range_end=range_select.value[1],
+                           bin_width=binwidth_select.value)
+
+    src.data.update(new_src.data)
+
+# CheckboxGroup to select loadcell to display
+loadcell_selection = CheckboxGroup(labels=available_load_cells, active=[0, 1, 2, 3])
+loadcell_selection.on_change('active', update)
+
+# Slider to select width of bin
+binwidth_select = Slider(start=0.005, end=0.1,
+                         step=0.005, value=0.005,
+                         title='Bin Width (V)')
+binwidth_select.on_change('value', update)
+
+# RangeSlider control to select start and end of plotted delays
+range_select = RangeSlider(start=0.45, end=2, value=(0.45, 2),
+                           step=0.01, title='Voltage Range (V)')
+range_select.on_change('value', update)
+
+# Find the initially selected loadcells
+initial_loadcells = [loadcell_selection.labels[i] for i in loadcell_selection.active]
+
+#src = make_dataset(initial_loadcells)
+src = make_dataset(tidy_load_cells, 0.45, 2, 0.005)
+p = make_plot(src, initial_loadcells)
+
+# Put controls in a single element
+controls = WidgetBox(loadcell_selection, binwidth_select, range_select)
+
+# Create a row layout
+layout = row(controls, p)
+
+# Make a tab with the layout
+tab3 = Panel(child=layout, title='Delay Histogram')
+
+
+
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
@@ -289,7 +419,7 @@ l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, v
 
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
-tabs = Tabs(tabs=[ tab1, tab2 ])
+tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
 
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
