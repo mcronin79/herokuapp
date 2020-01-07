@@ -89,7 +89,8 @@ fig = figure(title='Line plot!', sizing_mode='scale_width')
 fig.line(x=[1, 2, 3], y=[1, 4, 9])
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
+l1 = layout([[fig, temperature_fig]], sizing_mode='fixed')
+#l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 #l2 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 
 #tab1 = Panel(child=l1,title="Air Quality")
