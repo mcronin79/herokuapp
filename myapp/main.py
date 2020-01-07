@@ -1,10 +1,12 @@
 from bokeh.io import curdoc
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.models.widgets import Tabs, Panel
+from bokeh.models import Range1d, LinearAxis
 from bokeh.layouts import gridplot, layout
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import scipy.ndimage.filters as filters
 
 tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
 
@@ -82,6 +84,115 @@ def plot_temperature():
 
     return p
 
+def plot_CO2():
+    p = figure(title="CO2 ppm", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, df['CO2'].astype(int), color='blue')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'CO2 (ppm)'
+
+    return p
+
+voltage1_fx = filters.gaussian_filter1d(df['Load_Cell1'], sigma=100)
+voltage2_fx = filters.gaussian_filter1d(df['Load_Cell2'], sigma=100)
+voltage3_fx = filters.gaussian_filter1d(df['Load_Cell3'], sigma=100)
+voltage4_fx = filters.gaussian_filter1d(df['Load_Cell4'], sigma=100)
+
+def plot_loadcell_voltages():
+    p = figure(title="Load Cell Voltages", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, df['Load_Cell1'], color='blue')#, legend='Load Cell 1')
+    p.line(time, df['Load_Cell2'], color='red')#, legend='Load Cell 2')
+    p.line(time, df['Load_Cell3'], color='green')#, legend='Load Cell 3')
+    p.line(time, df['Load_Cell4'], color='orange')#, legend='Load Cell 4')
+    p.line(time, voltage1_fx, color='black')
+    p.line(time, voltage2_fx, color='black')
+    p.line(time, voltage3_fx, color='black')
+    p.line(time, voltage4_fx, color='black')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Voltage (V)'
+
+    return p
+
+def plot_voltages_smooth():
+    p = figure(title="Voltages Smooth", title_location="above", x_axis_type='datetime', tools=tools,
+               toolbar_location="above")
+    p.line(time, voltage1_fx, color='blue', legend='Voltage 1 Smooth')
+    p.line(time, voltage2_fx, color='red', legend='Voltage 2 Smooth')
+    p.line(time, voltage3_fx, color='green', legend='Voltage 3 Smooth')
+    p.line(time, voltage4_fx, color='orange', legend='Voltage 4 Smooth')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Voltage (V)'
+
+    return p
+
+loadcell1_fx = filters.gaussian_filter1d(df['Load_Cell1']-df['Load_Cell1'].mean(), sigma=100)
+loadcell2_fx = filters.gaussian_filter1d(df['Load_Cell2']-df['Load_Cell2'].mean(), sigma=100)
+loadcell3_fx = filters.gaussian_filter1d(df['Load_Cell3']-df['Load_Cell3'].mean(), sigma=100)
+loadcell4_fx = filters.gaussian_filter1d(df['Load_Cell4']-df['Load_Cell4'].mean(), sigma=100)
+usb_fx = filters.gaussian_filter1d(df['VUSB'] - df['VUSB'].mean(), sigma=100)
+
+def plot_loadcell_voltages_ac():
+    p = figure(title="Load Cell Voltages AC Only", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    #p.line(time, df['Load_Cell1']-df['Load_Cell1'].mean(), color='blue')#, legend='Load Cell 1')
+    #p.line(time, df['Load_Cell2']-df['Load_Cell2'].mean(), color='red')#, legend='Load Cell 2')
+    #p.line(time, df['Load_Cell3']-df['Load_Cell3'].mean(), color='green')#, legend='Load Cell 3')
+    #p.line(time, df['Load_Cell4']-df['Load_Cell4'].mean(), color='orange')#, legend='Load Cell 4')
+    p.line(time, loadcell1_fx, color='blue')
+    p.line(time, loadcell2_fx, color='red')
+    p.line(time, loadcell3_fx, color='green')
+    p.line(time, loadcell4_fx, color='orange')
+    #p.line(time, df['VUSB'] - df['VUSB'].mean(), color='black')#, legend='VUSB')
+    p.line(time, usb_fx, color='black')  # , legend='VUSB')
+    #p.line(time, df['Temperature'] - df['Temperature'].mean(), color='magenta')#, legend='Temperature')
+
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Voltage (V)'
+
+    return p
+
+def plot_loadcell_voltages_and_temperature_means():
+    p = figure(title="Load Cell Voltages & Temperature Variation", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, df['Load_Cell1'] - df['Load_Cell1'].mean(), color='blue')  # , legend='Load Cell 1')
+    p.line(time, df['Load_Cell2'] - df['Load_Cell2'].mean(), color='red')  # , legend='Load Cell 2')
+    p.line(time, df['Load_Cell3'] - df['Load_Cell3'].mean(), color='green')  # , legend='Load Cell 3')
+    p.line(time, df['Load_Cell4'] - df['Load_Cell4'].mean(), color='orange')  # , legend='Load Cell 4')
+    p.line(time, df['VUSB'] - df['VUSB'].mean(), color='black')  # , legend='VUSB')
+
+    p.yaxis.axis_label = 'Voltage (V)'
+    lc1 = df['Load_Cell1'] - df['Load_Cell1'].mean()
+    lc2 = df['Load_Cell2'] - df['Load_Cell2'].mean()
+    lc3 = df['Load_Cell3'] - df['Load_Cell3'].mean()
+    lc4 = df['Load_Cell4'] - df['Load_Cell4'].mean()
+
+    #p.y_range = Range1d((df['Load_Cell1'] - df['Load_Cell1'].mean()).min(), (df['Load_Cell1'] - df['Load_Cell1'].mean()).max())  # SECOND AXIS, y_range is temperature_range, fixed attribute
+    p.y_range = Range1d(pd.DataFrame([lc1, lc2, lc3, lc4]).values.min()*1.1, pd.DataFrame([lc1, lc2, lc3, lc4]).values.max()*1.1)  # SECOND AXIS, y_range is temperature_range, fixed attribute
+    temperature_range = 'blah'
+    a = df['Temperature'] - df['Temperature'].mean()
+    p.extra_y_ranges = {
+        temperature_range: Range1d(a.min()*1.1, a.max()*1.1)
+    }
+    p.add_layout(LinearAxis(y_range_name=temperature_range, axis_label='Temperature (°C)'), 'right')
+
+    p.line(time, a, y_range_name=temperature_range, color="magenta")#, legend='Temperature')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    #p.legend.location = 'bottom_right'
+
+    return p
+
 def plot_humidity():
     p = figure(title="Humidity", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
     p.line(time, str_humidity, color='cyan', legend='Humidity')
@@ -93,8 +204,36 @@ def plot_humidity():
 
     return p
 
+def plot_temp_and_humidity():
+    p = figure(title="Temperature & Humidity", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, str_temperature,  color="magenta", legend='Temperature')
+    p.line(time, str_rtd_temperature, color='green', legend='RTD_Temperature')
+
+    p.yaxis.axis_label = 'Temperature (°C)'
+    p.y_range = Range1d(temperature.min()-0.1, temperature.max()+0.1)  # SECOND AXIS, y_range is temperature_range, fixed attribute
+    humidity_range = 'blah'
+    p.extra_y_ranges = {
+        humidity_range: Range1d(humidity.min()*0.975, humidity.max()*1.025)
+    }
+    p.add_layout(LinearAxis(y_range_name=humidity_range, axis_label='Humidity (%)'), 'right')
+
+    p.line(time, str_humidity, y_range_name=humidity_range, color="cyan", legend='Humidity')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.legend.location = 'bottom_right'
+
+    return p
+
 temperature_fig = plot_temperature()
 humidity_fig = plot_humidity()
+temp_and_hum_fig = plot_temp_and_humidity()
+load_cell_voltages_fig = plot_loadcell_voltages()
+load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+weight_fig = plot_weight()
+CO2_fig = plot_CO2()
 
 fig1 = figure(title='Line plot 1!', sizing_mode='scale_width')
 fig1.line(x=[1, 2, 3], y=[1, 4, 9])
@@ -112,8 +251,9 @@ fig4.line(x=[1, 2, 3], y=[1, 4, 9])
 l1 = layout([[temperature_fig, fig2]], sizing_mode='fixed')
 l2 = layout([[humidity_fig, fig4]], sizing_mode='fixed')
 
-#l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
-#l2 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
+
+l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
+l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
