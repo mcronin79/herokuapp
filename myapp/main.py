@@ -27,15 +27,15 @@ gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
 data = wks.get_all_values()
 headers = data.pop(0)
-print(headers)
+#print(headers)
 
 df = pd.DataFrame(data, columns=headers)
 
-print(" ")
-print("here")
-print(" ")
-print(df.shape)
-print(len(df.index))
+#print(" ")
+#print("here")
+#print(" ")
+#print(df.shape)
+#print(len(df.index))
 
 
 df.columns = [c.replace(" ","_") for c in df.columns]
@@ -72,7 +72,7 @@ df['Load_Cell4'] = df['Load_Cell4'].astype(float)
 df['VUSB'] = df['VUSB'].astype(float)
 
 non_z_weights = df.query('Load_Cell1 != 0 & Load_Cell2 != 0 & Load_Cell3 != 0 & Load_Cell4 != 0')
-print(non_z_weights.head())
+#print(non_z_weights.head())
 
 # todo: add grid to plot
 time = df['Timestamp']
@@ -281,18 +281,18 @@ CO2_fig = plot_CO2()
 
 
 load_cell_cols = [col for col in df.columns if 'Load_Cell' in col]
-print('load cell column names:', load_cell_cols)
+#print('load cell column names:', load_cell_cols)
 
 tidy_load_cells = df.melt(value_vars=load_cell_cols)
-print(tidy_load_cells.head())
+#print(tidy_load_cells.head())
 
 # Available load cell list
 available_load_cells = list(tidy_load_cells['variable'].unique())
 
 # Sort the list in-place (alphabetical order)
 available_load_cells.sort()
-print('available_load_cells:', available_load_cells)
-print('length of available_load_cells:', len(available_load_cells))
+#print('available_load_cells:', available_load_cells)
+#print('length of available_load_cells:', len(available_load_cells))
 
 def style(p):
     p.title.align = 'center'
@@ -307,12 +307,12 @@ def style(p):
 def make_dataset(tidy_data, range_start, range_end, bin_width):
     by_loadcell = pd.DataFrame(columns=['count', 'left', 'right',
                                        'v_count', 'v_interval', 'color'])
-    print('by_loadcell is:', by_loadcell)
-    print('tidy_data is:', tidy_data)
+    #print('by_loadcell is:', by_loadcell)
+    #print('tidy_data is:', tidy_data)
 
-    print(range_start)
-    print(range_end)
-    print(bin_width)
+    #print(range_start)
+    #print(range_end)
+    #print(bin_width)
 
     for i, j in enumerate(tidy_data['variable'].unique()):
         x_min = (math.ceil(min(tidy_data[tidy_data['variable'] == j]['value']) * 1000) - 1) / 1000
@@ -320,8 +320,8 @@ def make_dataset(tidy_data, range_start, range_end, bin_width):
 
         range_extent = x_max - x_min
 
-        print('x_min:', x_min)
-        print('x_max:', x_max)
+        #print('x_min:', x_min)
+        #print('x_max:', x_max)
         #print(tidy_data['variable']==i)
         # Check to make sure the start is less than the end!
         assert x_min < x_max, "Start must be less than end!"
@@ -337,7 +337,7 @@ def make_dataset(tidy_data, range_start, range_end, bin_width):
         # Color each loadcell differently
         by_load_cell_df['color'] = Spectral6[i]
 
-        print('by_load_cell columns:', by_load_cell_df.columns)
+        #print('by_load_cell columns:', by_load_cell_df.columns)
 
         by_loadcell = by_loadcell.append(by_load_cell_df)
 
