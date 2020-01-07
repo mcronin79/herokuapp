@@ -1,7 +1,7 @@
 from bokeh.io import curdoc
 from bokeh.plotting import figure, ColumnDataSource
 from bokeh.models.widgets import Tabs, Panel
-from bokeh.layouts import gridplot
+from bokeh.layouts import gridplot, layout
 import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
