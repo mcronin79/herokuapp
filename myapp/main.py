@@ -226,6 +226,39 @@ def plot_temp_and_humidity():
 
     return p
 
+weights = ['Weight1', 'Weight2', 'Weight3', 'Weight4']
+
+def plot_4weight_bar():
+    p = figure(title="Load Cell Weights", title_location="above", x_range=weights, plot_height=250)
+    p.vbar(x=weights, top=[5, 3, 4, 2, 4, 6], width=0.9)
+
+    p.xgrid.grid_line_color = None
+    p.y_range.start = 0
+
+    return p
+
+def plot_weight():
+    p = figure(title='Weight', title_location="above", x_axis_type='datetime', tools=tools, toolbar_location='above')
+    offset = 15421626
+    slope = 8.01888E-07
+
+    weight = []
+    for w in df['Weight_Code']:
+        value = (w - offset) * slope * 1000
+        weight.append(value)
+
+    weight_fx = filters.gaussian_filter1d(weight, sigma=50)
+
+    p.line(time, weight, color='red', legend='Weight')
+    p.line(time, weight_fx, color='black', legend='Weight Smooth')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Weight (Kg)'
+
+    return p
+
 temperature_fig = plot_temperature()
 humidity_fig = plot_humidity()
 temp_and_hum_fig = plot_temp_and_humidity()
