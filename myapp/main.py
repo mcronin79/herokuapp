@@ -4,7 +4,7 @@ from bokeh.plotting import figure
 from bokeh.models.widgets import Tabs, Panel, CheckboxGroup, Slider, RangeSlider
 from bokeh.models import Range1d, LinearAxis, ColumnDataSource, HoverTool
 from bokeh.application.handlers import FunctionHandler
-from bokeh.layouts import gridplot, layout
+from bokeh.layouts import gridplot, layout, row, WidgetBox
 import pandas as pd
 import gspread
 import math
