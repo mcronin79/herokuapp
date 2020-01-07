@@ -274,6 +274,19 @@ CO2_fig = plot_CO2()
 
 
 
+load_cell_cols = [col for col in df.columns if 'Load_Cell' in col]
+print('load cell column names:', load_cell_cols)
+
+tidy_load_cells = df.melt(value_vars=load_cell_cols)
+print(tidy_load_cells.head())
+
+# Available load cell list
+available_load_cells = list(tidy_load_cells['variable'].unique())
+
+# Sort the list in-place (alphabetical order)
+available_load_cells.sort()
+print('available_load_cells:', available_load_cells)
+print('length of available_load_cells:', len(available_load_cells))
 
 def style(p):
     p.title.align = 'center'
