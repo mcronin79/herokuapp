@@ -85,19 +85,28 @@ def plot_temperature():
 
 temperature_fig = plot_temperature()
 
-fig = figure(title='Line plot!', sizing_mode='scale_width')
-fig.line(x=[1, 2, 3], y=[1, 4, 9])
+fig1 = figure(title='Line plot 1!', sizing_mode='scale_width')
+fig1.line(x=[1, 2, 3], y=[1, 4, 9])
+
+fig2 = figure(title='Line plot 2!', sizing_mode='scale_width')
+fig2.line(x=[1, 2, 3], y=[1, 4, 9])
+
+fig3 = figure(title='Line plot 3!', sizing_mode='scale_width')
+fig3.line(x=[1, 2, 3], y=[1, 4, 9])
+
+fig4 = figure(title='Line plot 4!', sizing_mode='scale_width')
+fig4.line(x=[1, 2, 3], y=[1, 4, 9])
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-l1 = layout([[fig, temperature_fig]], sizing_mode='fixed')
-l2 = layout([[fig, temperature_fig]], sizing_mode='fixed')
+l1 = layout([[fig1, fig2]], sizing_mode='fixed')
+l2 = layout([[fig3, fig4]], sizing_mode='fixed')
 
 #l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 #l2 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-#tab2 = Panel(child=l2,title="Metrics")
-tabs = Tabs(tabs=[ tab1 ])
+tab2 = Panel(child=l2,title="Metrics")
+tabs = Tabs(tabs=[ tab1, tab2 ])
 
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
