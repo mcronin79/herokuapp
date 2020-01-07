@@ -310,6 +310,6 @@ tabs = Tabs(tabs=[ tab1, tab2 ])
 
 show(tabs)
 
-import matplotlib.pyplot as plt
-plt.plot(time, df['CO2'].astype(int), color='blue')
+#import matplotlib.pyplot as plt
+#plt.plot(time, df['CO2'].astype(int), color='blue')
 #plt.show()
