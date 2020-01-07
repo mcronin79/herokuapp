@@ -281,11 +281,11 @@ fig4 = figure(title='Line plot 4!', sizing_mode='scale_width')
 fig4.line(x=[1, 2, 3], y=[1, 4, 9])
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-#l1 = layout([[temperature_fig, fig2]], sizing_mode='fixed')
-#l2 = layout([[humidity_fig, fig4]], sizing_mode='fixed')
+l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
+l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
-l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
-l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
+#l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
+#l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
