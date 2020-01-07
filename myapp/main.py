@@ -2,7 +2,7 @@ from bokeh.io import curdoc
 from bokeh.palettes import Spectral6
 from bokeh.plotting import figure
 from bokeh.models.widgets import Tabs, Panel, CheckboxGroup, Slider, RangeSlider
-from bokeh.models import Range1d, LinearAxis, ColumnDataSource
+from bokeh.models import Range1d, LinearAxis, ColumnDataSource, HoverTool
 from bokeh.application.handlers import FunctionHandler
 from bokeh.layouts import gridplot, layout
 import pandas as pd
