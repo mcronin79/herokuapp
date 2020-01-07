@@ -22,7 +22,7 @@ json_creds = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
 
 creds_dict = json.loads(json_creds)
 creds_dict["private_key"] = creds_dict["private_key"].replace("\\\\n", "\n")
-credentials = ServiceAccountCredentials.from_json_keyfile_name(creds_dict, scope) # Your json file here
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope) # Your json file here
 gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
 data = wks.get_all_values()
