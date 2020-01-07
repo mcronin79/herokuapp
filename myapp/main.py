@@ -96,8 +96,8 @@ l2 = layout([[fig, temperature_fig]], sizing_mode='fixed')
 #l2 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-tab2 = Panel(child=l2,title="Metrics")
-tabs = Tabs(tabs=[ tab1, tab2 ])
+#tab2 = Panel(child=l2,title="Metrics")
+tabs = Tabs(tabs=[ tab1 ])
 
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
