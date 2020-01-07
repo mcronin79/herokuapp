@@ -82,8 +82,19 @@ def plot_temperature():
 
     return p
 
+def plot_humidity():
+    p = figure(title="Humidity", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, str_humidity, color='cyan', legend='Humidity')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Humidity (%)'
+
+    return p
 
 temperature_fig = plot_temperature()
+humidity_fig = plot_humidity()
 
 fig1 = figure(title='Line plot 1!', sizing_mode='scale_width')
 fig1.line(x=[1, 2, 3], y=[1, 4, 9])
@@ -98,8 +109,8 @@ fig4 = figure(title='Line plot 4!', sizing_mode='scale_width')
 fig4.line(x=[1, 2, 3], y=[1, 4, 9])
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-l1 = layout([[fig1, fig2]], sizing_mode='fixed')
-l2 = layout([[fig3, fig4]], sizing_mode='fixed')
+l1 = layout([[temperature_fig, fig2]], sizing_mode='fixed')
+l2 = layout([[humidity_fig, fig4]], sizing_mode='fixed')
 
 #l1 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
 #l2 = gridplot([[temperature_fig, fig], [temperature_fig, fig]], sizing_mode='stretch_both')
