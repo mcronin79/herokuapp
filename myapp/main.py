@@ -33,12 +33,23 @@ headers = data.pop(0)
 
 df = pd.DataFrame(data, columns=headers)
 
+sio = socketio.Client()
+
+sio.connect('https://gsheets-stream.herokuapp.com/')
+sio.wait()
 #print(" ")
 #print("here")
 #print(" ")
 #print(df.shape)
 #print(len(df.index))
 
+@sio.on('message')
+def print_message(sid, message):
+    # When we receive a new event of type
+    # 'message' through a socket.io connection
+    # we print the socket ID and the message
+    print("Socket ID: " , sid)
+    print(message)
 
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
