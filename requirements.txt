@@ -13,3 +13,4 @@ oauth2client
 plotly
 cufflinks
 matplotlib
+python_socketio
