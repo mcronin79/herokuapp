@@ -435,11 +435,7 @@ def update():
 
 fig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
              x_range=[0, 1], y_range=[0, 1])
-fig.circle(source=source, x='x', y='y', color='color', size=10)
-
-doc.title = "Now with live updating!"
-doc.add_root(fig)
-
+fig.circle(source=streamsource, x='x', y='y', color='color', size=10)
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
