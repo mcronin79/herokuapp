@@ -12,6 +12,7 @@ import os
 import json
 import numpy as np
 import random
+import socketio
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
