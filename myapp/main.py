@@ -281,150 +281,6 @@ CO2_fig = plot_CO2()
 
 
 
-load_cell_cols = [col for col in df.columns if 'Load_Cell' in col]
-#print('load cell column names:', load_cell_cols)
-
-tidy_load_cells = df.melt(value_vars=load_cell_cols)
-#print(tidy_load_cells.head())
-
-# Available load cell list
-available_load_cells = list(tidy_load_cells['variable'].unique())
-
-# Sort the list in-place (alphabetical order)
-available_load_cells.sort()
-#print('available_load_cells:', available_load_cells)
-#print('length of available_load_cells:', len(available_load_cells))
-
-def style(p):
-    p.title.align = 'center'
-    p.title.text_font_size = '18pt'
-    p.xaxis.axis_label_text_font_size = '12pt'
-    p.xaxis.major_label_text_font_size = '12pt'
-    p.yaxis.axis_label_text_font_size = '12pt'
-    p.yaxis.major_label_text_font_size = '12pt'
-
-    return p
-
-def make_dataset(tidy_data, range_start, range_end, bin_width):
-    by_loadcell = pd.DataFrame(columns=['count', 'left', 'right',
-                                       'v_count', 'v_interval', 'color'])
-    #print('by_loadcell is:', by_loadcell)
-    #print('tidy_data is:', tidy_data)
-
-    #print(range_start)
-    #print(range_end)
-    #print(bin_width)
-
-    for i, j in enumerate(tidy_data['variable'].unique()):
-        x_min = (math.ceil(min(tidy_data[tidy_data['variable'] == j]['value']) * 1000) - 1) / 1000
-        x_max = (math.ceil(max(tidy_data[tidy_data['variable'] == j]['value']) * 1000) + 1) / 1000
-
-        range_extent = x_max - x_min
-
-        #print('x_min:', x_min)
-        #print('x_max:', x_max)
-        #print(tidy_data['variable']==i)
-        # Check to make sure the start is less than the end!
-        assert x_min < x_max, "Start must be less than end!"
-
-        tidy_data_hist, edges = np.histogram(tidy_data[tidy_data['variable'] == j]['value'], bins=int(range_extent / bin_width), range=[range_start, range_end])
-        # Put the information in a dataframe
-        by_load_cell_df = pd.DataFrame({'count': tidy_data_hist,
-                                     j: tidy_data_hist,
-                                     'left': edges[:-1],
-                                     'right': edges[1:]})
-        by_load_cell_df['v_count'] = ['%d hits' % count for count in by_load_cell_df['count']]
-        by_load_cell_df['v_interval'] = ['%f to %f V' % (left, right) for left, right in zip(by_load_cell_df['left'], by_load_cell_df['right'])]
-        # Color each loadcell differently
-        by_load_cell_df['color'] = Spectral6[i]
-
-        #print('by_load_cell columns:', by_load_cell_df.columns)
-
-        by_loadcell = by_loadcell.append(by_load_cell_df)
-
-    return ColumnDataSource(by_loadcell)
-
-def make_plot(src, col):
-    # Blank plot with correct labels
-    p = figure(plot_width=700,
-               plot_height=700,
-               title='Histogram of Voltages',
-               x_axis_label='Voltage (V)',
-               y_axis_label='Number of Readings')
-
-    for i in col:
-        # Quad glyphs to create a histogram
-        p.quad(source=src,
-               bottom=0,
-               top='count',
-               left='left',
-               right='right',
-               fill_color='color',
-               line_color='black',
-               fill_alpha=0.75,
-               legend=i,
-               hover_fill_alpha=1.0,
-               hover_fill_color='red')
-
-    # Hover tool with vline mode
-    hover = HoverTool(tooltips=[('# of Voltages', '@v_count'),
-                                ('Bin', '@v_interval')],
-                      mode='vline')
-
-    p.add_tools(hover)
-
-    p.legend.click_policy = 'hide'
-
-    # Styling
-    p = style(p)
-
-    #show(p)
-
-    return p
-
-# Update the plot based on selections
-def update(attr, old, new):
-    # print(f'Inside Updater {range_select.value} || {binwidth_select.value}')
-    loadcells_to_plot = [loadcell_selection.labels[i] for i in loadcell_selection.active]
-
-    #new_src = make_dataset(loadcells_to_plot,
-    # Range select indexing changed
-    new_src=make_dataset(tidy_load_cells,
-                           range_start=range_select.value[0],
-                           range_end=range_select.value[1],
-                           bin_width=binwidth_select.value)
-
-    src.data.update(new_src.data)
-
-# CheckboxGroup to select loadcell to display
-loadcell_selection = CheckboxGroup(labels=available_load_cells, active=[0, 1, 2, 3])
-loadcell_selection.on_change('active', update)
-
-# Slider to select width of bin
-binwidth_select = Slider(start=0.005, end=0.1,
-                         step=0.005, value=0.005,
-                         title='Bin Width (V)')
-binwidth_select.on_change('value', update)
-
-# RangeSlider control to select start and end of plotted delays
-range_select = RangeSlider(start=0.45, end=2, value=(0.45, 2),
-                           step=0.01, title='Voltage Range (V)')
-range_select.on_change('value', update)
-
-# Find the initially selected loadcells
-initial_loadcells = [loadcell_selection.labels[i] for i in loadcell_selection.active]
-
-#src = make_dataset(initial_loadcells)
-src = make_dataset(tidy_load_cells, 0.45, 2, 0.005)
-p = make_plot(src, initial_loadcells)
-
-# Put controls in a single element
-controls = WidgetBox(loadcell_selection, binwidth_select, range_select)
-
-# Create a row layout
-l3 = row(controls, p)
-
-
 streamsource = ColumnDataSource({'x': [], 'y': [], 'color': []})
 
 def update():
@@ -449,9 +305,9 @@ l4 = layout([[fig]], sizing_mode='fixed')
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
-tab3 = Panel(child=l3, title='Delay Histogram')
+#tab3 = Panel(child=l3, title='Delay Histogram')
 tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1, tab2, tab3, tab4 ])
+tabs = Tabs(tabs=[ tab1, tab2, tab4 ])
 
 curdoc().add_periodic_callback(update, 100)
 curdoc().title = "Hello, world!"
