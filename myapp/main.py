@@ -11,6 +11,7 @@ import math
 import os
 import json
 import numpy as np
+import random
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
@@ -424,12 +425,29 @@ controls = WidgetBox(loadcell_selection, binwidth_select, range_select)
 l3 = row(controls, p)
 
 
+streamsource = ColumnDataSource({'x': [], 'y': [], 'color': []})
 
+def update():
+    new = {'x': [random.random()],
+           'y': [random.random()],
+           'color': [random.choice(['red', 'blue', 'green'])]}
+    streamsource.stream(new)
+
+doc.add_periodic_callback(update, 100)
+
+fig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
+             x_range=[0, 1], y_range=[0, 1])
+fig.circle(source=source, x='x', y='y', color='color', size=10)
+
+doc.title = "Now with live updating!"
+doc.add_root(fig)
 
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
 l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
+
+l4 = layout([[fig]], sizing_mode='fixed')
 
 #l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
@@ -438,7 +456,9 @@ tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
 tab3 = Panel(child=l3, title='Delay Histogram')
-tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
+tab4 = Panel(child=l4, title='Streaming')
+tabs = Tabs(tabs=[ tab1, tab2, tab3, tab4 ])
 
+curdoc().add_periodic_callback(update, 100)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
