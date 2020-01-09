@@ -14,4 +14,3 @@ plotly
 cufflinks
 matplotlib
 python_socketio
-sheetsy
