@@ -35,7 +35,7 @@ df = pd.DataFrame(data, columns=headers)
 
 sio = socketio.Client()
 
-sio.connect('https://gsheets-stream.herokuapp.com/')
+sio.connect('https://modified-sheets-stream.herokuapp.com/')
 sio.wait()
 #print(" ")
 #print("here")
