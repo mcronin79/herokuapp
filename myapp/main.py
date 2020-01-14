@@ -76,11 +76,11 @@ def print_message(data):
     # When we receive a new event of type
     # 'message' through a socket.io connection
     # we print the socket ID and the message
-    print("here print_message 1");
-    print(data)
+    print("here print_message 1"); 
+    print(len(data))
     test = data
     print("here print_message 2");
-    print(test)
+    print(len(test))
 
 print("here 4");
 #print(test);
