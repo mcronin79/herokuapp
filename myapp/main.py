@@ -42,6 +42,7 @@ sio.wait()
 #print(" ")
 #print(df.shape)
 #print(len(df.index))
+var test = {};
 
 @sio.on('message')
 def print_message(sid, message):
@@ -49,7 +50,11 @@ def print_message(sid, message):
     # 'message' through a socket.io connection
     # we print the socket ID and the message
     print("Socket ID: " , sid)
+    test = message;         
     print(message)
+
+print("here message");
+print(test);
 
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
