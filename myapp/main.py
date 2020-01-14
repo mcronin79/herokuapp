@@ -59,7 +59,6 @@ def print_message(data):
     # When we receive a new event of type
     # 'message' through a socket.io connection
     # we print the socket ID and the message
-    print("Socket ID: " , sid)
     test = data
     print(test)
 
