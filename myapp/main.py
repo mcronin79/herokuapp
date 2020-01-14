@@ -47,16 +47,18 @@ sio.wait()
 #print(len(df.index))
 test = None
 
-@sio.on('message')
-def print_message(sid, message):
+print("here 3");
+
+@sio.on('data')
+def print_message(sid, data):
     # When we receive a new event of type
     # 'message' through a socket.io connection
     # we print the socket ID and the message
     print("Socket ID: " , sid)
-    test = message;         
+    test = data
     #print(message)
 
-print("here 3");
+print("here 4");
 print(test);
 
 df.columns = [c.replace(" ","_") for c in df.columns]
