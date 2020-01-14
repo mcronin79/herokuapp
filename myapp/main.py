@@ -28,18 +28,23 @@ credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope
 gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
 data = wks.get_all_values()
-headers = data.pop(0)   
+headers = data.pop(0) 
+firstRow = data.pop(1)   
+listLen = len(data)
+
 print("here 1")  
 print(headers) 
 print("here 2")  
-print(data)
+print(firstRow)
+print("here 3")  
+print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
 
 sio = socketio.Client()
 
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
-sio.wait()
+#sio.wait()
 #print(" ")
 #print("here")
 #print(" ")
