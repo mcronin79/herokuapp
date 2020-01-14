@@ -42,7 +42,7 @@ sio.wait()
 #print(" ")
 #print(df.shape)
 #print(len(df.index))
-var test = {};
+test = None
 
 @sio.on('message')
 def print_message(sid, message):
