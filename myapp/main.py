@@ -28,8 +28,11 @@ credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope
 gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
 data = wks.get_all_values()
-headers = data.pop(0)
-#print(headers)
+headers = data.pop(0)   
+print("here 1")  
+print(headers) 
+print("here 2")  
+print(data)
 
 df = pd.DataFrame(data, columns=headers)
 
@@ -51,9 +54,9 @@ def print_message(sid, message):
     # we print the socket ID and the message
     print("Socket ID: " , sid)
     test = message;         
-    print(message)
+    //print(message)
 
-print("here message");
+print("here 3");
 print(test);
 
 df.columns = [c.replace(" ","_") for c in df.columns]
