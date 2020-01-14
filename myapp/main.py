@@ -54,7 +54,7 @@ def print_message(sid, message):
     # we print the socket ID and the message
     print("Socket ID: " , sid)
     test = message;         
-    //print(message)
+    #print(message)
 
 print("here 3");
 print(test);
