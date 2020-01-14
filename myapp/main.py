@@ -13,8 +13,25 @@ import json
 import numpy as np
 import random
 import socketio
+import logging
+
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
+
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = logging.Formatter(
+        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+logging.getLogger('socketio').setLevel(logging.ERROR)
+logging.getLogger('engineio').setLevel(logging.ERROR)
+
+
+logger.debug('often makes a very good meal of %s', 'visiting tourists')
+
 
 tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
 
@@ -41,7 +58,7 @@ print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
 
-sio = socketio.Client(engineio_logger=False)
+sio = socketio.Client(logger=False)
 
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #sio.wait()
