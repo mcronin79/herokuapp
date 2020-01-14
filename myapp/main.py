@@ -55,13 +55,13 @@ test = None
 print("here 3");
 
 @sio.on('data')
-def print_message(sid, data):
+def print_message(data):
     # When we receive a new event of type
     # 'message' through a socket.io connection
     # we print the socket ID and the message
     print("Socket ID: " , sid)
     test = data
-    #print(message)
+    print(test)
 
 print("here 4");
 print(test);
