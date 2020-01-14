@@ -41,7 +41,7 @@ print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
 
-sio = socketio.Client(logger=False)
+sio = socketio.Client(engineio_logger=False)
 
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #sio.wait()
