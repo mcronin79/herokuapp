@@ -389,7 +389,8 @@ temperature_fig_test = plot_temperature_test()
 #l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
-l1 = layout([[temperature_fig, temperature_fig_test]], sizing_mode='fixed')
+l1 = layout([[temperature_fig]], sizing_mode='fixed')
+l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
@@ -397,11 +398,11 @@ l1 = layout([[temperature_fig, temperature_fig_test]], sizing_mode='fixed')
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-#tab2 = Panel(child=l2,title="Metrics")
+tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
 #tab3 = Panel(child=l3, title='Delay Histogram')
 #tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1])
+tabs = Tabs(tabs=[ tab1, tab2])
 
 curdoc().add_periodic_callback(update, 30000)
 curdoc().title = "Hello, world!"
