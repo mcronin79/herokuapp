@@ -53,7 +53,7 @@ df = pd.DataFrame(data, columns=headers)
 sio = socketio.Client(logger=False)
 
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
-testData = None
+testData = []
 
 print("here 3");
 
@@ -70,19 +70,12 @@ def print_message(data):
     print(len(data))
     print("here print_message 2"); 
     print(data)
+    global testData
     testData = data
     print("here print_message 3");
     print(len(testData))
 
 print("here 4");
-
-data_dict = {"Dates":["2017-03-01",
-                  "2017-03-02",
-                  "2017-03-03",
-                  "2017-03-04",
-                  "2017-03-05",
-                  "2017-03-06"],
-             "Prices":[1, 2, 1, 2, 1, 2]}
 
 # Turn it into a dataframe
 #testDataFrame = pd.DataFrame(testData, columns=headers)
@@ -126,6 +119,7 @@ def plot_temperature_test():
 
 def update():
     print("here update 1");
+    global testData
     print(len(testData))
     testDataFrame = pd.DataFrame(
         testData,
