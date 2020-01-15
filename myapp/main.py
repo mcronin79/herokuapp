@@ -129,7 +129,7 @@ def update():
     print(eventCount)
     print("here update 3"); 
     print(updateCount)
-    if (eventCount > updateCount) {
+    if (eventCount > updateCount):
         global testData
         print("here update 4");
         print(testData)
@@ -141,7 +141,6 @@ def update():
         updateCount = updateCount + 1
         print("here update 5"); 
         print(updateCount)
-    }
    
 
 
