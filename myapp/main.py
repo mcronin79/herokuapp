@@ -66,18 +66,18 @@ updateCount = 0
 
 @sio.on('data')
 def print_message(data):
+    global eventCount
     print("here print_message 1"); 
     print(len(data))
     print("here print_message 2"); 
     print(data)
-    global eventCount
-    eventCount = eventCount + 1
-    print("here print_message 3"); 
-    print(eventCount)
     global testData
     testData = data
-    print("here print_message 4");
+    print("here print_message 3");
     print(len(testData))
+    eventCount = eventCount + 1
+    print("here print_message 4"); 
+    print(eventCount)
 
 print("here 4");
 
@@ -138,7 +138,7 @@ def update():
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
     'Load Cell4', 'VUSB', 'Weight Code'])
         streamsource.stream(testDataFrame)
-        updateCount = updateCount + 1
+        updateCount = eventCount
         print("here update 5"); 
         print(updateCount)
    
@@ -389,7 +389,7 @@ temperature_fig_test = plot_temperature_test()
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 l1 = layout([[temperature_fig]], sizing_mode='fixed')
-l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
+#l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
@@ -397,12 +397,12 @@ l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-tab2 = Panel(child=l2,title="Metrics")
+#tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
 #tab3 = Panel(child=l3, title='Delay Histogram')
 #tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1, tab2])
+tabs = Tabs(tabs=[ tab1])
 
-curdoc().add_periodic_callback(update, 30000)
+curdoc().add_periodic_callback(update, 10000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
