@@ -70,13 +70,15 @@ def print_message(data):
     print("here print_message 1"); 
     print(len(data))
     print("here print_message 2"); 
+    print(eventCount)
+    print("here print_message 3"); 
     print(data)
     global testData
     testData = data
-    print("here print_message 3");
+    print("here print_message 4");
     print(len(testData))
     eventCount = eventCount + 1
-    print("here print_message 4"); 
+    print("here print_message 5"); 
     print(eventCount)
 
 print("here 4");
