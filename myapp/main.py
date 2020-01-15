@@ -60,8 +60,8 @@ print("here 3");
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
 
-
-
+eventCount = 0
+updateCount = 0
 
 
 @sio.on('data')
@@ -70,9 +70,13 @@ def print_message(data):
     print(len(data))
     print("here print_message 2"); 
     print(data)
+    global eventCount
+    eventCount = eventCount + 1
+    print("here print_message 3"); 
+    print(eventCount)
     global testData
     testData = data
-    print("here print_message 3");
+    print("here print_message 4");
     print(len(testData))
 
 print("here 4");
@@ -119,14 +123,26 @@ def plot_temperature_test():
 
 def update():
     print("here update 1");
-    global testData
-    print(len(testData))
-    testDataFrame = pd.DataFrame(
-        testData,
-        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
-'Load Cell4', 'VUSB', 'Weight Code'])
-    streamsource.stream(testDataFrame)
-
+    global eventCount
+    global updateCount
+    print("here update 2"); 
+    print(eventCount)
+    print("here update 3"); 
+    print(updateCount)
+    if (eventCount > updateCount) {
+        global testData
+        print("here update 4");
+        print(testData)
+        testDataFrame = pd.DataFrame(
+            testData,
+            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
+    'Load Cell4', 'VUSB', 'Weight Code'])
+        streamsource.stream(testDataFrame)
+        updateCount = updateCount + 1
+        print("here update 5"); 
+        print(updateCount)
+    }
+   
 
 
 str_temperature = df['Temperature']
@@ -387,6 +403,6 @@ tab1 = Panel(child=l1,title="Air Quality")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1])
 
-curdoc().add_periodic_callback(update, 100)
+curdoc().add_periodic_callback(update, 30000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
