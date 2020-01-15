@@ -14,29 +14,21 @@ import numpy as np
 import random
 import socketio
 import logging
-
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
-
 logger = logging.getLogger()
 handler = logging.StreamHandler()
-formatter = logging.Formatter(
-        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 logging.getLogger('socketio').setLevel(logging.ERROR)
 logging.getLogger('engineio').setLevel(logging.ERROR)
 
-
-logger.debug('often makes a very good meal of %s', 'visiting tourists')
-
-
 tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
 
-scope = ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 json_creds = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
 
 creds_dict = json.loads(json_creds)
@@ -49,11 +41,11 @@ headers = data.pop(0)
 firstRow = data.pop(1)   
 listLen = len(data)
 
-print("here 1")  
-print(headers) 
+print("here 1")
+print(headers)
 print("here 2")  
 print(firstRow)
-print("here 3")  
+print("here 3")
 print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
@@ -61,36 +53,87 @@ df = pd.DataFrame(data, columns=headers)
 sio = socketio.Client(logger=False)
 
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
-#sio.wait()
-#print(" ")
-#print("here")
-#print(" ")
-#print(df.shape)
-#print(len(df.index))
-test = None
+testData = None
 
 print("here 3");
 
+df.columns = [c.replace(" ","_") for c in df.columns]
+skinned_headers = df.dtypes.index
+
+
+
+
+
 @sio.on('data')
 def print_message(data):
-    # When we receive a new event of type
-    # 'message' through a socket.io connection
-    # we print the socket ID and the message
     print("here print_message 1"); 
     print(len(data))
     print("here print_message 2"); 
     print(data)
-    test = data
+    testData = data
     print("here print_message 3");
-    print(len(test))
+    print(len(testData))
 
 print("here 4");
-#print(test);
+
+data_dict = {"Dates":["2017-03-01",
+                  "2017-03-02",
+                  "2017-03-03",
+                  "2017-03-04",
+                  "2017-03-05",
+                  "2017-03-06"],
+             "Prices":[1, 2, 1, 2, 1, 2]}
+
+# Turn it into a dataframe
+#testDataFrame = pd.DataFrame(testData, columns=headers)
+testDataFrame = pd.DataFrame(
+        {'Timestamp': [], 
+         'Temperature': [], 
+         'Humidity': [], 
+         'RTD Temperature': [], 
+         'CO2': [], 
+         'Weight1': [], 
+         'Weight2': [], 
+         'Weight3': [], 
+         'Weight4': [], 
+         'Load Cell1': [], 
+         'Load Cell2': [], 
+         'Load Cell3': []}, ,
+        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
+'Load Cell4', 'VUSB', 'Weight Code'])
+
+df['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
+df['RTD_Temperature'] = df['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
+
+streamsource = ColumnDataSource(testDataFrame)
+
+fig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
+             x_range=[0, 1], y_range=[0, 1])
+fig.circle(source=streamsource, x='x', y='y', color='color', size=10)
 
 
+def plot_temperature_test():
+    p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(source=streamsource, 'Timestamp', 'Temperature', color='magenta', legend='Temperature')
+    p.line(source=streamsource, 'Timestamp', 'RTD_Temperature', color='green', legend='RTD_Temperature')
 
-df.columns = [c.replace(" ","_") for c in df.columns]
-skinned_headers = df.dtypes.index
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Temperature (°C)'
+
+    return p
+
+def update():
+    print("here update 1");
+    print(len(testData))
+    testDataFrame = pd.DataFrame(
+        testData,
+        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
+'Load Cell4', 'VUSB', 'Weight Code'])
+    streamsource.stream(testDataFrame)
+
+
 
 str_temperature = df['Temperature']
 str_rtd_temperature = df['RTD_Temperature']
@@ -132,17 +175,6 @@ rtd_temperature = df['RTD_Temperature']
 humidity = df['Humidity']
 time_for_weight = non_z_weights['Timestamp'] # drop times where weight is recoded as zero
 
-def plot_temperature_test():
-    p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-    p.line(time, str_temperature, color='magenta', legend='Temperature')
-    p.line(time, str_rtd_temperature, color='green', legend='RTD_Temperature')
-
-    p.plot_height = 600
-    p.plot_width = 800
-    p.xaxis.axis_label = 'Time'
-    p.yaxis.axis_label = 'Temperature (°C)'
-
-    return p
 
 def plot_temperature():
     p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
@@ -332,18 +364,22 @@ def plot_weight():
     return p
 
 temperature_fig = plot_temperature()
-humidity_fig = plot_humidity()
-temp_and_hum_fig = plot_temp_and_humidity()
-load_cell_voltages_fig = plot_loadcell_voltages()
-load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
-voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
-weight_fig = plot_weight()
-CO2_fig = plot_CO2()
+temperature_fig_test = plot_temperature_test()
+
+#humidity_fig = plot_humidity()
+#temp_and_hum_fig = plot_temp_and_humidity()
+#load_cell_voltages_fig = plot_loadcell_voltages()
+#load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+#voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+#weight_fig = plot_weight()
+#CO2_fig = plot_CO2()
 
 
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
-l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
+#l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
+#l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
+
+l1 = layout([[temperature_fig, temperature_fig_test]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
@@ -351,11 +387,11 @@ l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, v
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-tab2 = Panel(child=l2,title="Metrics")
+#tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
 #tab3 = Panel(child=l3, title='Delay Histogram')
 #tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1, tab2])
+tabs = Tabs(tabs=[ tab1])
 
 curdoc().add_periodic_callback(update, 100)
 curdoc().title = "Hello, world!"
