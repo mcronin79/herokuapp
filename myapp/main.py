@@ -78,12 +78,16 @@ def print_message(data):
     # we print the socket ID and the message
     print("here print_message 1"); 
     print(len(data))
+    print("here print_message 2"); 
+    print(data)
     test = data
-    print("here print_message 2");
+    print("here print_message 3");
     print(len(test))
 
 print("here 4");
 #print(test);
+
+
 
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
@@ -128,6 +132,17 @@ rtd_temperature = df['RTD_Temperature']
 humidity = df['Humidity']
 time_for_weight = non_z_weights['Timestamp'] # drop times where weight is recoded as zero
 
+def plot_temperature_test():
+    p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p.line(time, str_temperature, color='magenta', legend='Temperature')
+    p.line(time, str_rtd_temperature, color='green', legend='RTD_Temperature')
+
+    p.plot_height = 600
+    p.plot_width = 800
+    p.xaxis.axis_label = 'Time'
+    p.yaxis.axis_label = 'Temperature (°C)'
+
+    return p
 
 def plot_temperature():
     p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
@@ -326,24 +341,11 @@ weight_fig = plot_weight()
 CO2_fig = plot_CO2()
 
 
-
-streamsource = ColumnDataSource({'x': [], 'y': [], 'color': []})
-
-def update():
-    new = {'x': [random.random()],
-           'y': [random.random()],
-           'color': [random.choice(['red', 'blue', 'green'])]}
-    streamsource.stream(new)
-
-fig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
-             x_range=[0, 1], y_range=[0, 1])
-fig.circle(source=streamsource, x='x', y='y', color='color', size=10)
-
 #l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
 l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
-l4 = layout([[fig]], sizing_mode='fixed')
+#l4 = layout([[fig]], sizing_mode='fixed')
 
 #l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
@@ -352,8 +354,8 @@ tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
 #tab3 = Panel(child=l3, title='Delay Histogram')
-tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1, tab2, tab4 ])
+#tab4 = Panel(child=l4, title='Streaming')
+tabs = Tabs(tabs=[ tab1, tab2])
 
 curdoc().add_periodic_callback(update, 100)
 curdoc().title = "Hello, world!"
