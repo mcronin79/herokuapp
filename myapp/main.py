@@ -114,8 +114,8 @@ fig.circle(source=streamsource, x='x', y='y', color='color', size=10)
 
 def plot_temperature_test():
     p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-    p.line(source=streamsource, 'Timestamp', 'Temperature', color='magenta', legend='Temperature')
-    p.line(source=streamsource, 'Timestamp', 'RTD_Temperature', color='green', legend='RTD_Temperature')
+    p.line('Timestamp', 'Temperature', source=streamsource, color='magenta', legend='Temperature')
+    p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
     p.plot_height = 600
     p.plot_width = 800
