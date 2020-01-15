@@ -98,7 +98,7 @@ testDataFrame = pd.DataFrame(
          'Weight4': [], 
          'Load Cell1': [], 
          'Load Cell2': [], 
-         'Load Cell3': []}, ,
+         'Load Cell3': []},
         columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
 'Load Cell4', 'VUSB', 'Weight Code'])
 
