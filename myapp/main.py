@@ -70,11 +70,17 @@ def print_message(data):
     print(type(data))
 
     print("here print_message 1"); 
+    pushedList = data['results']    
+    print(len(pushedList))
+
+    print("here print_message 2"); 
     data_dict = json.dumps(data)
     print(len(data_dict))
-    print("here print_message 2"); 
-    pushedList = data_dict['results']
-    print(len(pushedList))
+    
+    print("here print_message 2A"); 
+    pushedListB = data_dict['results']
+    print(len(pushedListB))
+    
     print("here print_message 3"); 
     print(eventCount)
     global testData
