@@ -178,7 +178,9 @@ def update():
             testData,
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
     'Load Cell4', 'VUSB', 'Weight Code'])
+        print("here update 7");
         streamsource.stream(testDataFrame)
+        print("here update 8");
    
 
 
