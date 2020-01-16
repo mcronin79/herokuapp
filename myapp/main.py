@@ -66,8 +66,11 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 @sio.on('data')
 def print_message(data):
     global eventCount
+    print("here print_message 0"); 
+    print(type(data))
+
     print("here print_message 1"); 
-    data_dict = json.loads(data)
+    data_dict = json.dumps(data)
     print(len(data_dict))
     print("here print_message 2"); 
     pushedList = data_dict['results']
