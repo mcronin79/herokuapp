@@ -50,9 +50,10 @@ print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
 
-sio = socketio.Client(logger=False)
+sio.AsyncClient(logger=False)
+#sio = socketio.Client(logger=False)
 
-sio.connect('https://modified-sheets-stream.herokuapp.com/')
+await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 testData = []
 
 print("here 3");
@@ -68,17 +69,21 @@ updateCount = 0
 def print_message(data):
     global eventCount
     print("here print_message 1"); 
-    print(len(data.results))
+    data_dict = json.loads(data)
+    print(len(data_dict))
     print("here print_message 2"); 
+    pushedList = data_dict['results']
+    print(len(pushedList))
+    print("here print_message 3"); 
     print(eventCount)
     global testData
     testData = data
-    print("here print_message 3"); 
+    print("here print_message 4"); 
     print(testData)
-    print("here print_message 4");
+    print("here print_message 5");
     print(len(testData.results))
     eventCount = eventCount + 1
-    print("here print_message 5"); 
+    print("here print_message 6"); 
     print(eventCount)
 
 print("here 4");
