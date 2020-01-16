@@ -50,20 +50,7 @@ print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
 
-sio.AsyncClient(logger=False)
-#sio = socketio.Client(logger=False)
-
-await sio.connect('https://modified-sheets-stream.herokuapp.com/')
-testData = []
-
-print("here 3");
-
-df.columns = [c.replace(" ","_") for c in df.columns]
-skinned_headers = df.dtypes.index
-
-eventCount = 0
-updateCount = 0
-
+sio = socketio.AsyncClient(logger=False)
 
 @sio.on('data')
 def print_message(data):
@@ -84,7 +71,21 @@ def print_message(data):
     print(len(testData.results))
     eventCount = eventCount + 1
     print("here print_message 6"); 
-    print(eventCount)
+    print(eventCount)#sio = socketio.Client(logger=False)
+
+await sio.connect('https://modified-sheets-stream.herokuapp.com/')
+
+#await sio.connect('https://modified-sheets-stream.herokuapp.com/')
+testData = []
+
+print("here 3");
+
+df.columns = [c.replace(" ","_") for c in df.columns]
+skinned_headers = df.dtypes.index
+
+eventCount = 0
+updateCount = 0
+
 
 print("here 4");
 
