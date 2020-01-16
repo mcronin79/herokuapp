@@ -68,15 +68,15 @@ updateCount = 0
 def print_message(data):
     global eventCount
     print("here print_message 1"); 
-    print(len(data))
+    print(len(data.results))
     print("here print_message 2"); 
     print(eventCount)
-    print("here print_message 3"); 
-    print(data)
     global testData
     testData = data
+    print("here print_message 3"); 
+    print(testData)
     print("here print_message 4");
-    print(len(testData))
+    print(len(testData.results))
     eventCount = eventCount + 1
     print("here print_message 5"); 
     print(eventCount)
@@ -133,16 +133,17 @@ def update():
     print(updateCount)
     if (eventCount > updateCount):
         global testData
-        print("here update 4");
+        print("here update 4"); 
+        updateCount = eventCount
+        print("here update 5"); 
+        print(updateCount)
+        print("here update 6");
         print(testData)
         testDataFrame = pd.DataFrame(
             testData,
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
     'Load Cell4', 'VUSB', 'Weight Code'])
         streamsource.stream(testDataFrame)
-        updateCount = eventCount
-        print("here update 5"); 
-        print(updateCount)
    
 
 
