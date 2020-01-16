@@ -66,6 +66,10 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 @sio.on('data')
 def print_message(data):
     global eventCount
+    
+    print("here print_message 00"); 
+    print(data)
+    
     print("here print_message 0"); 
     print(type(data))
 
