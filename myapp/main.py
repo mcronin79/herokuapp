@@ -74,27 +74,31 @@ def print_message(data):
     print("here print_message 0"); 
     print(type(data))
 
+    global testData
+    testData = data
+    
     if isinstance(data, dict):
         print("here print_message 1"); 
         pushedDict = data['results']    
         print(len(pushedDict))
+        print("here print_message 2");
+        print(len(testData['results']))
     
     if isinstance(data, list):
-        print("here print_message 2");    
+        print("here print_message 3");    
         print(len(data))
         pushedList = data[0] 
-        print(pushedList)
+        print("here print_message 4");
+        print(len(pushedList))
+        print("here print_message 5");
+        print(len(testData))
         
-    print("here print_message 3"); 
-    print(eventCount)
-    global testData
-    testData = data
-    print("here print_message 4"); 
-    print(testData)
-    print("here print_message 5");
-    print(len(testData['results']))
-    eventCount = eventCount + 1
     print("here print_message 6"); 
+    print(eventCount)
+    print("here print_message 7"); 
+    print(testData)
+    eventCount = eventCount + 1
+    print("here print_message 8"); 
     print(eventCount)#sio = socketio.Client(logger=False)
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
