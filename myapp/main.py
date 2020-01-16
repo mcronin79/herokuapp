@@ -61,6 +61,7 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #async def start_server():
 #    await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #    await sio.wait()
+testData = []
     
     
 @sio.on('data')
@@ -73,10 +74,17 @@ def print_message(data):
     print("here print_message 0"); 
     print(type(data))
 
-    print("here print_message 1"); 
-    pushedList = data['results']    
-    print(len(pushedList))
+    if isinstance(data, dict):
+        print("here print_message 1"); 
+        pushedDict = data['results']    
+        print(len(pushedDict))
     
+    if isinstance(data, list):
+        print("here print_message 2");    
+        print(len(data))
+        pushedList = data[0] 
+        print(pushedList)
+        
     print("here print_message 3"); 
     print(eventCount)
     global testData
@@ -94,7 +102,6 @@ def print_message(data):
 #loop.run_until_complete(start_server())
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
-testData = []
 
 print("here 3");
 
