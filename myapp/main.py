@@ -12,7 +12,7 @@ import os
 import json
 import numpy as np
 import random
-import asyncio
+#import asyncio
 import socketio
 import logging
 from oauth2client.service_account import ServiceAccountCredentials
@@ -52,16 +52,19 @@ print(listLen)
 
 df = pd.DataFrame(data, columns=headers)
 
-loop = asyncio.get_event_loop()
-sio = socketio.AsyncClient(logger=False)
+#loop = asyncio.get_event_loop()
+#sio = socketio.AsyncClient(logger=False)
 
-async def start_server():
-    await sio.connect('https://modified-sheets-stream.herokuapp.com/')
-    await sio.wait()
+sio = socketio.Client()
+sio.connect('https://modified-sheets-stream.herokuapp.com/')
+
+#async def start_server():
+#    await sio.connect('https://modified-sheets-stream.herokuapp.com/')
+#    await sio.wait()
     
     
 @sio.on('data')
-async def print_message(data):
+def print_message(data):
     global eventCount
     print("here print_message 1"); 
     data_dict = json.loads(data)
@@ -83,7 +86,7 @@ async def print_message(data):
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 
-loop.run_until_complete(start_server())
+#loop.run_until_complete(start_server())
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 testData = []
