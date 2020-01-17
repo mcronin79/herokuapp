@@ -106,7 +106,7 @@ streamsource = ColumnDataSource(testDataFrame)
 def plot_temperature_test():
     p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
     p.line('Timestamp', 'Temperature', source=streamsource, color='magenta', legend='Temperature')
-    p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
+    #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
     p.plot_height = 600
     p.plot_width = 800
