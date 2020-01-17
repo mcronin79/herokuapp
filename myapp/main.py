@@ -15,6 +15,7 @@ import random
 #import asyncio
 import socketio
 import logging
+import itertools
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
@@ -63,7 +64,8 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #    await sio.wait()
 testData = []
 
-eventCount = 0
+#eventCount = 0
+eventCount = itertools.count()
 updateCount = 0    
     
 @sio.on('data')
@@ -99,7 +101,7 @@ def print_message(data):
     print(eventCount)
     print("here print_message 7"); 
     print(testData)
-    eventCount = increment(eventCount)
+    eventCount.next()
     print("here print_message 8"); 
     print(eventCount)#sio = socketio.Client(logger=False)
 
