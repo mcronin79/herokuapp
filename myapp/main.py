@@ -108,7 +108,7 @@ print(type(streamsource))
 testTime = testDataFrame['Timestamp']
 testTemperature = testDataFrame['Temperature']
 temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-temperature_fig_test.line(testTime, testTemperature, source=streamsource, color='magenta', legend='Temperature')
+temperature_fig_test.line(x='Timestamp', y='Temperature', source=streamsource, color='magenta', legend='Temperat')
 #p.line(time, str_temperature, color='magenta', legend='Temperature')
 #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
