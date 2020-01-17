@@ -50,8 +50,12 @@ print("here 2")
 print(firstRow)
 print("here 3")
 print(listLen)
+print("here 4")
+print(data)
 
 df = pd.DataFrame(data, columns=headers)
+print("here 5")
+print(df)
 
 #loop = asyncio.get_event_loop()
 #sio = socketio.AsyncClient(logger=False)
@@ -73,7 +77,7 @@ def print_message(data):
     global eventCount
     
     print("here print_message 00"); 
-    print(data)
+    #print(data)
     
     print("here print_message 0"); 
     print(type(data))
@@ -103,7 +107,7 @@ def print_message(data):
     print("eventCount 2"); 
     print(eventCount)
     print("printing testData"); 
-    print(testData)
+    #print(testData)
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 
@@ -119,7 +123,6 @@ skinned_headers = df.dtypes.index
 def increment(eventCount):
      return eventCount + 1
 
-print("here 4");
 
 # Turn it into a dataframe
 #testDataFrame = pd.DataFrame(testData, columns=headers)
@@ -138,6 +141,9 @@ testDataFrame = pd.DataFrame(
          'Load Cell3': []},
         columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
 'Load Cell4', 'VUSB', 'Weight Code'])
+
+print("here 6");
+print(testDataFrame)
 
 df['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
 df['RTD_Temperature'] = df['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
@@ -184,10 +190,12 @@ def update():
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
     'Load Cell4', 'VUSB', 'Weight Code'])
         print("here update 7");
-        streamsource.stream(testDataFrame)
+        print(testDataFrame)
         print("here update 8");
-        testData = []
+        streamsource.stream(testDataFrame)
         print("here update 9");
+        testData = []
+        print("here update 10");
 
 
 str_temperature = df['Temperature']
