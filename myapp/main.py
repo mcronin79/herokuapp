@@ -12,10 +12,8 @@ import os
 import json
 import numpy as np
 import random
-#import asyncio
 import socketio
 import logging
-import itertools
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
@@ -50,102 +48,34 @@ print("here 2")
 print(firstRow)
 print("here 3")
 print(listLen)
-#print("here 4")
-#print(gsheetRows)
 
 df = pd.DataFrame(gsheetRows, columns=headers)
-#print("here 5")
-#print(df)
-
-#loop = asyncio.get_event_loop()
-#sio = socketio.AsyncClient(logger=False)
 
 sio = socketio.Client()
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
 
-#async def start_server():
-#    await sio.connect('https://modified-sheets-stream.herokuapp.com/')
-#    await sio.wait()
 testData = []
-
-#eventCount = 0
-#eventCount = itertools.count()
-updateCount = 0    
     
 @sio.on('data')
 def print_message(data):
-    #global eventCount
-    global gsheetRows
-    global df
     global testData
-    global testDataFrame
-    
-    print("here print_message type(gsheetRows)"); 
-    print(type(gsheetRows))
-    print("here print_message type(data)"); 
-    print(type(data))
-    #print("here print_message gsheetRows"); 
-    #print(gsheetRows)
-    #print("here print_message df"); 
-    #print(df)
-    #print(data)
-    
     testData = data
     
     if isinstance(data, dict):
         print("here print_message len(pushedDict)"); 
         pushedDict = data['results']    
         print(len(pushedDict))
-        print("here print_message len(testData['results']");
-        print(len(testData['results']))
     
     if isinstance(data, list):
-        #print("here print_message len(data)");    
-        #print(len(data))
-        #pushedList = data[0] 
-        #print("here print_message len(pushedList)");
-        #print(len(pushedList))
         print("here print_message len(testData)");
         print(len(testData))
         if (len(testData) > 2):
             testData.pop(0)
-        #print("here print_message testData");
-        #print(testData)
-        testDataFrame = pd.DataFrame(
-            testData,
-            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
-    'Load Cell4', 'VUSB', 'Weight Code'])
-        print("here update 7");
-        print(testDataFrame)
-        print("here update 8");
-        streamsource.stream(testDataFrame)
-        print("here update 9"); 
-    print("here print_message type(gsheetRows)"); 
-    print(type(gsheetRows))
-    print("here print_message type(data)"); 
-    print(type(data))
-    #print("eventCount 1"); 
-    #print(eventCount)
-    #eventCount = eventCount + 1
-    #print("eventCount 2"); 
-    #print(eventCount)
-    #print("printing testData"); 
-    #print(testData)
-
-#await sio.connect('https://modified-sheets-stream.herokuapp.com/')
-
-#loop.run_until_complete(start_server())
-
-#await sio.connect('https://modified-sheets-stream.herokuapp.com/')
-
+            
 print("here 3");
 
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
-
-def increment(eventCount):
-     return eventCount + 1
-
 
 # Turn it into a dataframe
 #testDataFrame = pd.DataFrame(testData, columns=headers)
@@ -173,11 +103,6 @@ df['RTD_Temperature'] = df['RTD_Temperature'].astype(float)#.apply(lambda x: x -
 
 streamsource = ColumnDataSource(testDataFrame)
 
-fig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
-             x_range=[0, 1], y_range=[0, 1])
-fig.circle(source=streamsource, x='x', y='y', color='color', size=10)
-
-
 def plot_temperature_test():
     p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
     p.line('Timestamp', 'Temperature', source=streamsource, color='magenta', legend='Temperature')
@@ -191,23 +116,24 @@ def plot_temperature_test():
     return p
 
 def update():
-    print("here update 1");
-    global eventCount
-    global updateCount
+    global gsheetRows
     global testData
-    print("here update 2"); 
-    print(eventCount)
-    print("here update 3"); 
-    print(updateCount)
+    global testDataFrame
+    global pd
+    global streamsource
+    print("here print_message type(gsheetRows)"); 
+    print(type(gsheetRows))
+    print("here print_message type(testData)"); 
+    print(type(testData))
+    print("here print_message type(testDataFrame)"); 
+    print(type(testDataFrame))
+    print("here print_message type(pd)"); 
+    print(type(pd))
+    print("here print_message type(streamsource)"); 
+    print(type(streamsource))
     if (len(testData) > 0):
         print("here update len(testData) is TRUE ")
-    #if (eventCount > updateCount):
-        print("here update 4"); 
-        updateCount = eventCount
-        print("here update 5"); 
-        print(updateCount)
-        print("here update 6");
-        print(testData)
+        #print(testData)
         testDataFrame = pd.DataFrame(
             testData,
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
@@ -480,6 +406,6 @@ tab2 = Panel(child=l2,title="Metrics")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2 ])
 
-#curdoc().add_periodic_callback(update, 10000)
+curdoc().add_periodic_callback(update, 20000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
