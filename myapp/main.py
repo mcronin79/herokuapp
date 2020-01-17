@@ -39,10 +39,10 @@ creds_dict["private_key"] = creds_dict["private_key"].replace("\\\\n", "\n")
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope) # Your json file here
 gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
-data = wks.get_all_values()
-headers = data.pop(0) 
-firstRow = data.pop(1)   
-listLen = len(data)
+gsheetRows = wks.get_all_values()
+headers = gsheetRows.pop(0) 
+firstRow = gsheetRows.pop(1)   
+listLen = len(gsheetRows)
 
 print("here 1")
 print(headers)
@@ -51,9 +51,9 @@ print(firstRow)
 print("here 3")
 print(listLen)
 print("here 4")
-print(data)
+print(gsheetRows)
 
-df = pd.DataFrame(data, columns=headers)
+df = pd.DataFrame(gsheetRows, columns=headers)
 print("here 5")
 print(df)
 
@@ -83,7 +83,7 @@ def print_message(data):
     print(type(data))
 
     global testData
-    testData = data
+    testData = gsheetRows
     
     if isinstance(data, dict):
         print("here print_message len(pushedDict)"); 
