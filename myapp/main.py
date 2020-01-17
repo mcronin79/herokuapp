@@ -98,6 +98,7 @@ testDataFrame = pd.DataFrame(
         columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
 'Load_Cell4', 'VUSB', 'Weight_Code'])
 
+testDataFrame = testDataFrame.fillna(0)
 testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
 testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
 testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
