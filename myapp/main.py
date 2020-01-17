@@ -84,10 +84,10 @@ def print_message(data):
     print(type(gsheetRows))
     print("here print_message type(data)"); 
     print(type(data))
-    print("here print_message gsheetRows"); 
-    print(gsheetRows)
-    print("here print_message df"); 
-    print(df)
+    #print("here print_message gsheetRows"); 
+    #print(gsheetRows)
+    #print("here print_message df"); 
+    #print(df)
     #print(data)
     
     testData = data
@@ -100,15 +100,17 @@ def print_message(data):
         print(len(testData['results']))
     
     if isinstance(data, list):
-        print("here print_message len(data)");    
-        print(len(data))
-        pushedList = data[0] 
-        print("here print_message len(pushedList)");
-        print(len(pushedList))
+        #print("here print_message len(data)");    
+        #print(len(data))
+        #pushedList = data[0] 
+        #print("here print_message len(pushedList)");
+        #print(len(pushedList))
         print("here print_message len(testData)");
         print(len(testData))
-        print("here print_message testData");
-        print(testData)
+        if (len(testData) > 2):
+            testData.pop(0)
+        #print("here print_message testData");
+        #print(testData)
         testDataFrame = pd.DataFrame(
             testData,
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
@@ -117,7 +119,11 @@ def print_message(data):
         print(testDataFrame)
         print("here update 8");
         streamsource.stream(testDataFrame)
-        print("here update 9");
+        print("here update 9"); 
+    print("here print_message type(gsheetRows)"); 
+    print(type(gsheetRows))
+    print("here print_message type(data)"); 
+    print(type(data))
     #print("eventCount 1"); 
     #print(eventCount)
     #eventCount = eventCount + 1
