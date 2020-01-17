@@ -96,8 +96,6 @@ testDataFrame = pd.DataFrame(
 'Load Cell4', 'VUSB', 'Weight Code'])
 
 testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
-testTime = testDataFrame['Timestamp']
-testTemperature = testDataFrame['Temperature']
 #testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 
 print("here 6");
@@ -105,21 +103,37 @@ print(testDataFrame)
 
 streamsource = ColumnDataSource(testDataFrame)
 
-def plot_temperature_test():
-    global streamsource
-    print("here print_message type(streamsource)"); 
-    print(type(streamsource))
-    p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-    p.line(testTime, testTemperature, source=streamsource, color='magenta', legend='Temperature')
-    #p.line(time, str_temperature, color='magenta', legend='Temperature')
-    #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
+print("here print_message type(streamsource)"); 
+print(type(streamsource))
+testTime = testDataFrame['Timestamp']
+testTemperature = testDataFrame['Temperature']
+temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+temperature_fig_test.line(testTime, testTemperature, source=streamsource, color='magenta', legend='Temperature')
+#p.line(time, str_temperature, color='magenta', legend='Temperature')
+#p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
-    p.plot_height = 600
-    p.plot_width = 800
-    p.xaxis.axis_label = 'Time'
-    p.yaxis.axis_label = 'Temperature (°C)'
+temperature_fig_test.plot_height = 600
+temperature_fig_test.plot_width = 800
+temperature_fig_test.xaxis.axis_label = 'Time'
+temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
-    return p
+#def plot_temperature_test():
+#    global streamsource
+##    print("here print_message type(streamsource)"); 
+#    print(type(streamsource))
+#    testTime = testDataFrame['Timestamp']
+#    testTemperature = testDataFrame['Temperature']
+#    p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+#    p.line(testTime, testTemperature, source=streamsource, color='magenta', legend='Temperature')
+#    #p.line(time, str_temperature, color='magenta', legend='Temperature')
+#    #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
+
+#    p.plot_height = 600
+#    p.plot_width = 800
+#    p.xaxis.axis_label = 'Time'
+#    p.yaxis.axis_label = 'Temperature (°C)'
+
+#    return p
 
 def update():
     global gsheetRows
