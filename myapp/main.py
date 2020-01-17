@@ -83,17 +83,20 @@ testDataFrame = pd.DataFrame(
         {'Timestamp': [], 
          'Temperature': [], 
          'Humidity': [], 
-         'RTD Temperature': [], 
+         'RTD_Temperature': [], 
          'CO2': [], 
          'Weight1': [], 
          'Weight2': [], 
          'Weight3': [], 
          'Weight4': [], 
-         'Load Cell1': [], 
-         'Load Cell2': [], 
-         'Load Cell3': []},
-        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
-'Load Cell4', 'VUSB', 'Weight Code'])
+         'Load_Cell1': [], 
+         'Load_Cell2': [], 
+         'Load_Cell3': [], 
+         'Load_Cell4': [], 
+         'VUSB': [], 
+         'Weight_Code': []},
+        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+'Load_Cell4', 'VUSB', 'Weight_Code'])
 
 testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
 testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
