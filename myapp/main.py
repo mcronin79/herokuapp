@@ -96,6 +96,8 @@ testDataFrame = pd.DataFrame(
 'Load Cell4', 'VUSB', 'Weight Code'])
 
 testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
+testTime = testDataFrame['Timestamp']
+testTemperature = testDataFrame['Temperature']
 #testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 
 print("here 6");
@@ -108,7 +110,7 @@ def plot_temperature_test():
     print("here print_message type(streamsource)"); 
     print(type(streamsource))
     p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-    p.line('Timestamp', 'Temperature', source=streamsource, color='magenta', legend='Temperature')
+    p.line(testTime, testTemperature, source=streamsource, color='magenta', legend='Temperature')
     #p.line(time, str_temperature, color='magenta', legend='Temperature')
     #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
