@@ -62,11 +62,13 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #    await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #    await sio.wait()
 testData = []
-    
+
+eventCount = 0
+updateCount = 0    
     
 @sio.on('data')
 def print_message(data):
-    global eventCount
+    #global eventCount
     
     print("here print_message 00"); 
     print(data)
@@ -97,7 +99,7 @@ def print_message(data):
     print(eventCount)
     print("here print_message 7"); 
     print(testData)
-    eventCount = eventCount + 1
+    eventCount = increment(eventCount)
     print("here print_message 8"); 
     print(eventCount)#sio = socketio.Client(logger=False)
 
@@ -112,9 +114,8 @@ print("here 3");
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
 
-eventCount = 0
-updateCount = 0
-
+def increment(eventCount):
+     return eventCount + 1
 
 print("here 4");
 
