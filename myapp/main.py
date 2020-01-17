@@ -59,19 +59,22 @@ testData = []
 @sio.on('data')
 def print_message(data):
     global testData
-    testData = data
+    #testData = data
     
     if isinstance(data, dict):
         print("here print_message len(pushedDict)"); 
         print(data)
-        #pushedDict = data['results']    
+        pushedDict = data['results']    
         print(len(data))
+        testData = pushedDict
     
     if isinstance(data, list):
         print("here print_message len(testData)");
         print(len(testData))
         if (len(testData) > 2):
             testData.pop(0)
+        print(testData)
+        testData = data
             
 print("here 3");
 
