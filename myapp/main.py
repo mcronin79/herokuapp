@@ -104,8 +104,12 @@ print(testDataFrame)
 streamsource = ColumnDataSource(testDataFrame)
 
 def plot_temperature_test():
+    global streamsource
+    print("here print_message type(streamsource)"); 
+    print(type(streamsource))
     p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
     p.line('Timestamp', 'Temperature', source=streamsource, color='magenta', legend='Temperature')
+    #p.line(time, str_temperature, color='magenta', legend='Temperature')
     #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
     p.plot_height = 600
@@ -141,7 +145,7 @@ def update():
         print("here update 7");
         print(testDataFrame)
         print("here update 8");
-        streamsource.stream(testDataFrame)
+        streamsource.stream(testDataFrame, 100)
         print("here update 9");
         testData = []
         print("here update 10");
