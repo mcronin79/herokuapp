@@ -62,19 +62,20 @@ def print_message(data):
     #testData = data
     
     if isinstance(data, dict):
-        print("here print_message len(pushedDict)"); 
-        print(data)
+        print("here print_message len(data)"); 
         pushedDict = data['results']    
-        print(len(data))
+        print("here print_message len(pushedDict)"); 
+        print(len(pushedDict))
         testData = pushedDict
+        print(testData)
     
     if isinstance(data, list):
         print("here print_message len(testData)");
+        testData = data
         print(len(testData))
         if (len(testData) > 2):
             testData.pop(0)
         print(testData)
-        testData = data
             
 print("here 3");
 
