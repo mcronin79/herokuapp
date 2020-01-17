@@ -413,7 +413,7 @@ def plot_weight():
     return p
 
 temperature_fig = plot_temperature()
-temperature_fig_test = plot_temperature_test()
+#temperature_fig_test = plot_temperature_test()
 
 #humidity_fig = plot_humidity()
 #temp_and_hum_fig = plot_temp_and_humidity()
