@@ -150,7 +150,7 @@ fig.circle(source=streamsource, x='x', y='y', color='color', size=10)
 
 
 def plot_temperature_test():
-    p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+    p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
     p.line('Timestamp', 'Temperature', source=streamsource, color='magenta', legend='Temperature')
     p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
@@ -434,7 +434,7 @@ temperature_fig_test = plot_temperature_test()
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 l1 = layout([[temperature_fig]], sizing_mode='fixed')
-#l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
+l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
@@ -442,11 +442,11 @@ l1 = layout([[temperature_fig]], sizing_mode='fixed')
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-#tab2 = Panel(child=l2,title="Metrics")
+tab2 = Panel(child=l2,title="Metrics")
 # Make a tab with the layout
 #tab3 = Panel(child=l3, title='Delay Histogram')
 #tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1])
+tabs = Tabs(tabs=[ tab1, tab2 ])
 
 curdoc().add_periodic_callback(update, 10000)
 curdoc().title = "Hello, world!"
