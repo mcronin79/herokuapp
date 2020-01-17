@@ -50,12 +50,12 @@ print("here 2")
 print(firstRow)
 print("here 3")
 print(listLen)
-print("here 4")
-print(gsheetRows)
+#print("here 4")
+#print(gsheetRows)
 
 df = pd.DataFrame(gsheetRows, columns=headers)
-print("here 5")
-print(df)
+#print("here 5")
+#print(df)
 
 #loop = asyncio.get_event_loop()
 #sio = socketio.AsyncClient(logger=False)
@@ -68,22 +68,29 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #    await sio.wait()
 testData = []
 
-eventCount = 0
+#eventCount = 0
 #eventCount = itertools.count()
 updateCount = 0    
     
 @sio.on('data')
 def print_message(data):
-    global eventCount
+    #global eventCount
+    global gsheetRows
+    global df
+    global testData
+    global testDataFrame
     
-    print("here print_message 00"); 
+    print("here print_message type(gsheetRows)"); 
+    print(type(gsheetRows))
+    print("here print_message type(data)"); 
+    print(type(data))
+    print("here print_message gsheetRows"); 
+    print(gsheetRows)
+    print("here print_message df"); 
+    print(df)
     #print(data)
     
-    print("here print_message 0"); 
-    print(type(data))
-
-    global testData
-    testData = gsheetRows
+    testData = data
     
     if isinstance(data, dict):
         print("here print_message len(pushedDict)"); 
@@ -100,13 +107,23 @@ def print_message(data):
         print(len(pushedList))
         print("here print_message len(testData)");
         print(len(testData))
-        
-    print("eventCount 1"); 
-    print(eventCount)
+        print("here print_message testData");
+        print(testData)
+        testDataFrame = pd.DataFrame(
+            testData,
+            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
+    'Load Cell4', 'VUSB', 'Weight Code'])
+        print("here update 7");
+        print(testDataFrame)
+        print("here update 8");
+        streamsource.stream(testDataFrame)
+        print("here update 9");
+    #print("eventCount 1"); 
+    #print(eventCount)
     #eventCount = eventCount + 1
-    print("eventCount 2"); 
-    print(eventCount)
-    print("printing testData"); 
+    #print("eventCount 2"); 
+    #print(eventCount)
+    #print("printing testData"); 
     #print(testData)
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
@@ -457,6 +474,6 @@ tab2 = Panel(child=l2,title="Metrics")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2 ])
 
-curdoc().add_periodic_callback(update, 10000)
+#curdoc().add_periodic_callback(update, 10000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
