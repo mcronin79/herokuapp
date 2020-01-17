@@ -119,7 +119,7 @@ testDataFrame2 = pd.DataFrame(
 'Load_Cell4', 'VUSB', 'Weight_Code'])
 
 testDataFrame = testDataFrame.fillna(0)
-testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
+testDataFrame['Timestamp'] = pd.to_datetime(testDataFrame['Timestamp'], format='%d/%m/%Y %H:%M:%S')
 testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
 testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 testDataFrame['Humidity'] = testDataFrame['Humidity'].astype(float)
