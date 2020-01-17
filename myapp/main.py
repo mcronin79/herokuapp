@@ -95,11 +95,11 @@ testDataFrame = pd.DataFrame(
         columns=['Timestamp', 'Temperature', 'Humidity', 'RTD Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load Cell1', 'Load Cell2', 'Load Cell3', 
 'Load Cell4', 'VUSB', 'Weight Code'])
 
+testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
+#testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
+
 print("here 6");
 print(testDataFrame)
-
-df['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
-df['RTD_Temperature'] = df['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 
 streamsource = ColumnDataSource(testDataFrame)
 
