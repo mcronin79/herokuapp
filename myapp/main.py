@@ -104,7 +104,7 @@ testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
 testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 testDataFrame['Humidity'] = testDataFrame['Humidity'].astype(float)
 
-testDataFrame['Weight_Code'] = testDataFrame['Weight_Code'].astype(int)
+testDataFrame['Weight_Code'] = testDataFrame['Weight_Code'].astype(float)
 testDataFrame['CO2'] = testDataFrame['CO2'].astype(float)
 
 testDataFrame['Load_Cell1'] = testDataFrame['Load_Cell1'].astype(float)
