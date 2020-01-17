@@ -99,7 +99,7 @@ def print_message(data):
         
     print("eventCount 1"); 
     print(eventCount)
-    eventCount = eventCount + 1
+    #eventCount = eventCount + 1
     print("eventCount 2"); 
     print(eventCount)
     print("printing testData"); 
@@ -165,14 +165,14 @@ def update():
     print("here update 1");
     global eventCount
     global updateCount
+    global testData
     print("here update 2"); 
     print(eventCount)
     print("here update 3"); 
     print(updateCount)
     if (len(testData) > 0):
         print("here update len(testData) is TRUE ")
-    if (eventCount > updateCount):
-        global testData
+    #if (eventCount > updateCount):
         print("here update 4"); 
         updateCount = eventCount
         print("here update 5"); 
@@ -186,7 +186,8 @@ def update():
         print("here update 7");
         streamsource.stream(testDataFrame)
         print("here update 8");
-   
+        testData = []
+        print("here update 9");
 
 
 str_temperature = df['Temperature']
