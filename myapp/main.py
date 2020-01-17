@@ -96,6 +96,19 @@ testDataFrame = pd.DataFrame(
 'Load Cell4', 'VUSB', 'Weight Code'])
 
 testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
+testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
+testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
+testDataFrame['Humidity'] = testDataFrame['Humidity'].astype(float)
+
+testDataFrame['O02'] = testDataFrame['CO2'].astype(int)
+testDataFrame['Weight_Code'] = testDataFrame['Weight_Code'].astype(int)
+
+testDataFrame['Load_Cell1'] = testDataFrame['Load_Cell1'].astype(float)
+testDataFrame['Load_Cell2'] = testDataFrame['Load_Cell2'].astype(float)
+testDataFrame['Load_Cell3'] = testDataFrame['Load_Cell3'].astype(float)
+testDataFrame['Load_Cell4'] = testDataFrame['Load_Cell4'].astype(float)
+
+testDataFrame['VUSB'] = testDataFrame['VUSB'].astype(float)
 #testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 
 print("here 6");
