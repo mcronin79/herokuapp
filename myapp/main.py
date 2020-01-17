@@ -63,6 +63,7 @@ def print_message(data):
     
     if isinstance(data, dict):
         print("here print_message len(pushedDict)"); 
+        print(data)
         #pushedDict = data['results']    
         print(len(data))
     
@@ -98,6 +99,25 @@ testDataFrame = pd.DataFrame(
         columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
 'Load_Cell4', 'VUSB', 'Weight_Code'])
 
+testDataFrame2 = pd.DataFrame(
+        {'Timestamp': [], 
+         'Temperature': [], 
+         'Humidity': [], 
+         'RTD_Temperature': [], 
+         'CO2': [], 
+         'Weight1': [], 
+         'Weight2': [], 
+         'Weight3': [], 
+         'Weight4': [], 
+         'Load_Cell1': [], 
+         'Load_Cell2': [], 
+         'Load_Cell3': [], 
+         'Load_Cell4': [], 
+         'VUSB': [], 
+         'Weight_Code': []},
+        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+'Load_Cell4', 'VUSB', 'Weight_Code'])
+
 testDataFrame = testDataFrame.fillna(0)
 testDataFrame['Timestamp'] = pd.to_datetime(df['Timestamp'], format='%d/%m/%Y %H:%M:%S')
 testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
@@ -115,6 +135,8 @@ testDataFrame['Load_Cell4'] = testDataFrame['Load_Cell4'].astype(float)
 testDataFrame['VUSB'] = testDataFrame['VUSB'].astype(float)
 #testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
 
+print("here 6 testDataFrame2");
+print(testDataFrame2)
 print("here 6");
 print(testDataFrame)
 
@@ -442,6 +464,6 @@ tab2 = Panel(child=l2,title="Metrics")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2 ])
 
-curdoc().add_periodic_callback(update, 20000)
+curdoc().add_periodic_callback(update, 60000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
