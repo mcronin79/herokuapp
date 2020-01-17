@@ -63,8 +63,8 @@ def print_message(data):
     
     if isinstance(data, dict):
         print("here print_message len(pushedDict)"); 
-        pushedDict = data['results']    
-        print(len(pushedDict))
+        #pushedDict = data['results']    
+        print(len(data))
     
     if isinstance(data, list):
         print("here print_message len(testData)");
