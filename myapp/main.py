@@ -64,13 +64,13 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 #    await sio.wait()
 testData = []
 
-#eventCount = 0
-eventCount = itertools.count()
+eventCount = 0
+#eventCount = itertools.count()
 updateCount = 0    
     
 @sio.on('data')
 def print_message(data):
-    #global eventCount
+    global eventCount
     
     print("here print_message 00"); 
     print(data)
@@ -82,28 +82,28 @@ def print_message(data):
     testData = data
     
     if isinstance(data, dict):
-        print("here print_message 1"); 
+        print("here print_message len(pushedDict)"); 
         pushedDict = data['results']    
         print(len(pushedDict))
-        print("here print_message 2");
+        print("here print_message len(testData['results']");
         print(len(testData['results']))
     
     if isinstance(data, list):
-        print("here print_message 3");    
+        print("here print_message len(data)");    
         print(len(data))
         pushedList = data[0] 
-        print("here print_message 4");
+        print("here print_message len(pushedList)");
         print(len(pushedList))
-        print("here print_message 5");
+        print("here print_message len(testData)");
         print(len(testData))
         
-    print("here print_message 6"); 
+    print("eventCount 1"); 
     print(eventCount)
-    print("here print_message 7"); 
+    eventCount = eventCount + 1
+    print("eventCount 2"); 
+    print(eventCount)
+    print("printing testData"); 
     print(testData)
-    eventCount.next()
-    print("here print_message 8"); 
-    print(eventCount)#sio = socketio.Client(logger=False)
 
 #await sio.connect('https://modified-sheets-stream.herokuapp.com/')
 
@@ -169,6 +169,8 @@ def update():
     print(eventCount)
     print("here update 3"); 
     print(updateCount)
+    if (len(testData) > 0):
+        print("here update len(testData) is TRUE ")
     if (eventCount > updateCount):
         global testData
         print("here update 4"); 
