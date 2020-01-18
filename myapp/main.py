@@ -76,7 +76,20 @@ def print_message(data):
         if (len(testData) > 2):
             testData.pop(0)
         print(testData)
-            
+     
+    if (len(testData) > 0):
+        print("here update len(testData) is TRUE ")
+        #print(testData)
+        newDataFrame = pd.DataFrame(
+            testData,
+            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
+        print("here update 7");
+        print(newDataFrame)
+        print("here update 8");
+        streamsource.stream(newDataFrame, 100)
+        print("here update 9");
+        testData = []
+        print("here update 10");
 print("here 3");
 
 df.columns = [c.replace(" ","_") for c in df.columns]
@@ -468,6 +481,6 @@ tab2 = Panel(child=l2,title="Metrics")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2 ])
 
-curdoc().add_periodic_callback(update, 60000)
+#curdoc().add_periodic_callback(update, 60000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
