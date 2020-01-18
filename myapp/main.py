@@ -56,7 +56,7 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 
 testData = []
     
-@sio.on('data')
+#@sio.on('data')
 def print_message(data):
     global testData
     #testData = data
@@ -212,22 +212,29 @@ def update():
     #global testDataFrame
     global pd
     global streamsource
+
+    newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
+
     print("here print_message type(gsheetRows)"); 
     print(type(gsheetRows))
-    print("here print_message type(testData)"); 
-    print(type(testData))
-    print("here print_message type(testDataFrame)"); 
-    print(type(testDataFrame))
-    print("here print_message type(pd)"); 
-    print(type(pd))
-    print("here print_message type(streamsource)"); 
-    print(type(streamsource))
-    if (len(testData) > 0):
+    #print("here print_message type(testData)"); 
+    #print(type(testData))
+    #print("here print_message type(testDataFrame)"); 
+    #print(type(testDataFrame))
+    #print("here print_message type(pd)"); 
+    #print(type(pd))
+    #print("here print_message type(streamsource)"); 
+    #print(type(streamsource))
+    #if (len(testData) > 0):
         print("here update len(testData) is TRUE ")
         #print(testData)
         newDataFrame = pd.DataFrame(
-            testData,
-            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
+            newmydata,
+            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+'Load_Cell4', 'VUSB', 'Weight_Code'])
+        #newDataFrame = pd.DataFrame(
+        #    testData,
+        #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
         print("here update 7");
         print(newDataFrame)
         print("here update 8");
@@ -496,6 +503,6 @@ tab2 = Panel(child=l2,title="Metrics")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2 ])
 
-#curdoc().add_periodic_callback(update, 60000)
+curdoc().add_periodic_callback(update, 60000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
