@@ -67,22 +67,28 @@ def print_message(data):
         print("here print_message len(pushedDict)"); 
         print(len(pushedDict))
         testData = pushedDict
-        print(testData)
+        #print(testData)
     
+    newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
+
     if isinstance(data, list):
         print("here print_message len(testData)");
         testData = data
         print(len(testData))
         if (len(testData) > 2):
             testData.pop(0)
-        print(testData)
+        #print(testData)
      
     if (len(testData) > 0):
         print("here update len(testData) is TRUE ")
         #print(testData)
         newDataFrame = pd.DataFrame(
-            testData,
-            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
+            mydata,
+            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+'Load_Cell4', 'VUSB', 'Weight_Code'])
+        #newDataFrame = pd.DataFrame(
+        #    testData,
+        #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
         print("here update 7");
         print(newDataFrame)
         print("here update 8");
@@ -97,24 +103,33 @@ skinned_headers = df.dtypes.index
 
 # Turn it into a dataframe
 #testDataFrame = pd.DataFrame(testData, columns=headers)
+#[[u'18/01/2020 12:16:01', u'12.58', u'78.24', u'12.41', u'1104', u'590', u'802', u'876', u'869', u'1.580281', u'1.164177', u'1.672761', u'0.979311', u'2.077344', u'36215504']]
+mydata = [['18/01/2020 12:16:01', '12.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
+#data = [['Alex',10],['Bob',12],['Clarke',13]]
+
 testDataFrame = pd.DataFrame(
-        {'Timestamp': [], 
-         'Temperature': [], 
-         'Humidity': [], 
-         'RTD_Temperature': [], 
-         'CO2': [], 
-         'Weight1': [], 
-         'Weight2': [], 
-         'Weight3': [], 
-         'Weight4': [], 
-         'Load_Cell1': [], 
-         'Load_Cell2': [], 
-         'Load_Cell3': [], 
-         'Load_Cell4': [], 
-         'VUSB': [], 
-         'Weight_Code': []},
-        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+    mydata,
+    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
 'Load_Cell4', 'VUSB', 'Weight_Code'])
+
+testDataFrame = pd.DataFrame(
+#        {'Timestamp': [], 
+#         'Temperature': [], 
+#         'Humidity': [], 
+#         'RTD_Temperature': [], 
+#         'CO2': [], 
+#         'Weight1': [], 
+#         'Weight2': [], 
+#         'Weight3': [], 
+#         'Weight4': [], 
+#         'Load_Cell1': [], 
+#         'Load_Cell2': [], 
+#         'Load_Cell3': [], 
+#        'Load_Cell4': [], 
+#         'VUSB': [], 
+#         'Weight_Code': []},
+#        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+#'Load_Cell4', 'VUSB', 'Weight_Code'])
 
 testDataFrame2 = pd.DataFrame(
         {'Timestamp': [], 
