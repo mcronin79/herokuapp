@@ -112,7 +112,7 @@ testDataFrame = pd.DataFrame(
     columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
 'Load_Cell4', 'VUSB', 'Weight_Code'])
 
-testDataFrame = pd.DataFrame(
+#testDataFrame = pd.DataFrame(
 #        {'Timestamp': [], 
 #         'Temperature': [], 
 #         'Humidity': [], 
