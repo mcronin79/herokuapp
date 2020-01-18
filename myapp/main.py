@@ -181,7 +181,7 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 def update():
     global gsheetRows
     global testData
-    global testDataFrame
+    #global testDataFrame
     global pd
     global streamsource
     print("here print_message type(gsheetRows)"); 
@@ -197,13 +197,13 @@ def update():
     if (len(testData) > 0):
         print("here update len(testData) is TRUE ")
         #print(testData)
-        testDataFrame = pd.DataFrame(
+        newDataFrame = pd.DataFrame(
             testData,
             columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
         print("here update 7");
-        print(testDataFrame)
+        print(newDataFrame)
         print("here update 8");
-        streamsource.stream(testDataFrame, 100)
+        streamsource.stream(newDataFrame, 100)
         print("here update 9");
         testData = []
         print("here update 10");
