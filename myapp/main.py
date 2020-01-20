@@ -14,10 +14,29 @@ import numpy as np
 import random
 import socketio
 import logging
+import enum 
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
-
+  
+# creating enumerations using class 
+class GSheetRow(enum.Enum): 
+    Timestamp = 0
+    Temperature = 1
+    Humidity = 2
+    RTD_Temperature = 3
+    CO2 = 4
+    Weight1 = 5
+    Weight2 = 6
+    Weight3 = 7
+    Weight4 = 8
+    Load_Cell1 = 9
+    Load_Cell2 = 10
+    Load_Cell3 = 11
+    Load_Cell4 = 12
+    VUSB = 13
+    Weight_Code = 14
+    
 logger = logging.getLogger()
 handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
@@ -56,7 +75,7 @@ sio.connect('https://modified-sheets-stream.herokuapp.com/')
 
 testData = []
     
-#@sio.on('data')
+@sio.on('data')
 def print_message(data):
     global testData
     #testData = data
@@ -65,37 +84,43 @@ def print_message(data):
         print("here print_message len(data)"); 
         pushedDict = data['results']    
         print("here print_message len(pushedDict)"); 
-        print(len(pushedDict))
-        testData = pushedDict
+        initialLoadLength = len(pushedDict)
+        print(initialLoadLength)
+        testData = pushedDict.pop(initialLoadLength - 1)
         #print(testData)
     
-    newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
+    #newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
 
     if isinstance(data, list):
         print("here print_message len(testData)");
         testData = data
-        print(len(testData))
-        if (len(testData) > 2):
-            testData.pop(0)
+        streamRowLength = len(testData)
+        print(streamRowLength)
+        testArray = testData.pop(0)
+        print("here print_message testArray");
+        print(testArray)
+        #if (len(testData) > 2):
+        #    testData.pop(0)
         #print(testData)
      
-    if (len(testData) > 0):
-        print("here update len(testData) is TRUE ")
+    #if (len(testData) > 0):
+        #print("here update len(testData) is TRUE ")
         #print(testData)
-        newDataFrame = pd.DataFrame(
-            mydata,
-            columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
-'Load_Cell4', 'VUSB', 'Weight_Code'])
+        #newDataFrame = pd.DataFrame(
+        #    mydata,
+        #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
+#'Load_Cell4', 'VUSB', 'Weight_Code'])
         #newDataFrame = pd.DataFrame(
         #    testData,
         #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
-        print("here update 7");
-        print(newDataFrame)
-        print("here update 8");
-        streamsource.stream(newDataFrame, 100)
-        print("here update 9");
-        testData = []
+        #print("here update 7");
+        #print(newDataFrame)
+        #print("here update 8");
+        #streamsource.stream(newDataFrame, 100)
+        #print("here update 9");
+        #testData = []
         print("here update 10");
+
 print("here 3");
 
 df.columns = [c.replace(" ","_") for c in df.columns]
@@ -178,15 +203,7 @@ print("here print_message type(streamsource)");
 print(type(streamsource))
 testTime = testDataFrame['Timestamp']
 testTemperature = testDataFrame['Temperature']
-temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-temperature_fig_test.line(x='Timestamp', y='Temperature', source=streamsource, color='magenta', legend='Temperat')
-#p.line(time, str_temperature, color='magenta', legend='Temperature')
-#p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
 
-temperature_fig_test.plot_height = 600
-temperature_fig_test.plot_width = 800
-temperature_fig_test.xaxis.axis_label = 'Time'
-temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
 #def plot_temperature_test():
 #    global streamsource
@@ -207,19 +224,44 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 #    return p
 
 source = ColumnDataSource({'x': [], 'y': [], 'color': []})
+testsource = ColumnDataSource({'x': [], 'y': []})
 
-newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
-             x_range=[0, 1], y_range=[0, 1])
+
+newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width', x_range=[0, 1], y_range=[0, 1])
 newfig.circle(source=source, x='x', y='y', color='color', size=10)
-    
+  
+temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+temperature_fig_test.line(x='Timestamp', y='Temperature', source=testsource, color='magenta', legend='Temperature')
+
+temperature_fig_test.plot_height = 600
+temperature_fig_test.plot_width = 800
+temperature_fig_test.xaxis.axis_label = 'Time'
+temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
 def update():
-    new = {'x': [random.random()],
-           'y': [random.random()],
+    global testData
+    print("GSheetRow.Timestamp.value")
+    print(GSheetRow.Timestamp.value)
+    
+    print("len(testData)")
+    print(len(testData))
+    if (len(testData) > 0):    
+        testArray = testData.pop(0)
+        print("testArray")
+        print(testArray)
+        print("testArray[GSheetRow.Timestamp.value]")
+        print(testArray[GSheetRow.Timestamp.value])
+        print(type(testArray[GSheetRow.Timestamp.value]))
+        print("testArray[GSheetRow.Temperature.value]")
+        print(testArray[GSheetRow.Temperature.value])
+        print(type(testArray[GSheetRow.Temperature.value]))
+        new = {'x': [testArray[GSheetRow.Timestamp.value]],
+           'y': [testArray[GSheetRow.Temperature.value]],
            'color': [random.choice(['red', 'blue', 'green'])]}
-    source.stream(new)
+        testsource.stream(new)
+        
     #global gsheetRows
-    #global testData
+    
     ##global testDataFrame
     #global pd
     #global streamsource
@@ -514,6 +556,6 @@ tab2 = Panel(child=l2,title="Metrics")
 #tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2 ])
 
-curdoc().add_periodic_callback(update, 60000)
+curdoc().add_periodic_callback(update, 30000)
 curdoc().title = "Hello, world!"
 curdoc().add_root(tabs)
