@@ -206,11 +206,12 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
 #    return p
 
+source = ColumnDataSource({'x': [], 'y': [], 'color': []})
+
 newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
              x_range=[0, 1], y_range=[0, 1])
 newfig.circle(source=source, x='x', y='y', color='color', size=10)
     
-source = ColumnDataSource({'x': [], 'y': [], 'color': []})
 
 def update():
     new = {'x': [random.random()],
