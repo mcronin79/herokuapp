@@ -119,7 +119,7 @@ def print_message(data):
         #streamsource.stream(newDataFrame, 100)
         #print("here update 9");
         #testData = []
-        print("here update 10");
+        print("here print_message 10");
 
 print("here 3");
 
@@ -256,8 +256,7 @@ def update():
         print(testArray[GSheetRow.Temperature.value])
         print(type(testArray[GSheetRow.Temperature.value]))
         new = {'x': [testArray[GSheetRow.Timestamp.value]],
-           'y': [testArray[GSheetRow.Temperature.value]],
-           'color': [random.choice(['red', 'blue', 'green'])]}
+           'y': [testArray[GSheetRow.Temperature.value]]}
         testsource.stream(new)
         
     #global gsheetRows
@@ -541,8 +540,8 @@ temperature_fig = plot_temperature()
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 l1 = layout([[temperature_fig]], sizing_mode='fixed')
-#l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
-l2 = layout([[newfig]], sizing_mode='fixed')
+l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
+#l2 = layout([[newfig]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
