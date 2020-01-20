@@ -206,17 +206,27 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
 #    return p
 
+newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width',
+             x_range=[0, 1], y_range=[0, 1])
+newfig.circle(source=source, x='x', y='y', color='color', size=10)
+    
+source = ColumnDataSource({'x': [], 'y': [], 'color': []})
+
 def update():
-    global gsheetRows
-    global testData
-    #global testDataFrame
-    global pd
-    global streamsource
+    new = {'x': [random.random()],
+           'y': [random.random()],
+           'color': [random.choice(['red', 'blue', 'green'])]}
+    source.stream(new)
+    #global gsheetRows
+    #global testData
+    ##global testDataFrame
+    #global pd
+    #global streamsource
 
-    newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
+    #newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
 
-    print("here print_message type(gsheetRows)"); 
-    print(type(gsheetRows))
+    #print("here print_message type(gsheetRows)"); 
+    #print(type(gsheetRows))
     #print("here print_message type(testData)"); 
     #print(type(testData))
     #print("here print_message type(testDataFrame)"); 
@@ -226,20 +236,20 @@ def update():
     #print("here print_message type(streamsource)"); 
     #print(type(streamsource))
     #if (len(testData) > 0):
-    print("here update len(testData) is TRUE ")
+    #print("here update len(testData) is TRUE ")
     #print(testData)
-    newDataFrame = pd.DataFrame(
-        newmydata,
-        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
+    #newDataFrame = pd.DataFrame(
+    #    newmydata,
+    #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
     #newDataFrame = pd.DataFrame(
     #    testData,
     #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
-    print("here update 7");
-    print(newDataFrame)
-    print("here update 8");
-    streamsource.stream(newDataFrame, 100)
-    print("here update 9");
-    testData = []
+    #print("here update 7");
+    #print(newDataFrame)
+    #print("here update 8");
+    #streamsource.stream(newDataFrame, 100)
+    #print("here update 9");
+    #testData = []
     print("here update 10");
 
 
@@ -488,7 +498,8 @@ temperature_fig = plot_temperature()
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 l1 = layout([[temperature_fig]], sizing_mode='fixed')
-l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
+#l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
+l2 = layout([[newfig]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
