@@ -276,7 +276,7 @@ def update():
         print("date_time_obj")
         print(date_time_obj)
         mydate = date_time_obj + timedelta(days=N)
-        mytemp = testArray[GSheetRow.Temperature.value]
+        mytemp = float(testArray[GSheetRow.Temperature.value])
         print(type(testArray[GSheetRow.Timestamp.value]))
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
