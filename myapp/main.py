@@ -15,7 +15,7 @@ import random
 import socketio
 import logging
 import enum 
-import datetime
+from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
@@ -229,6 +229,9 @@ testTemperature = testDataFrame['Temperature']
 
 #    return p
 
+date_5_days_ago = datetime.now() - timedelta(days=5)
+date_5_days_time = datetime.now() + timedelta(days=5)
+
 source = ColumnDataSource({'x': [], 'y': [], 'color': []})
 testsource = ColumnDataSource({'Timestamp': [], 'Temperature': []})
 
@@ -237,8 +240,8 @@ newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width', x_ran
 newfig.circle(source=source, x='x', y='y', color='color', size=10)
   
 temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', 
-                              tools=tools, toolbar_location="above", y_range=[0, 30])
-temperature_fig_test.line(x='Timestamp', y='Temperature', source=testsource, color='magenta', legend='Temperature')
+                              tools=tools, toolbar_location="above", x_range=[date_5_days_ago, date_5_days_time], y_range=[0, 30])
+temperature_fig_test.line(x='Timestamp', y='Temperature', source=testsource, color='magenta', legend='Temp')
 
 temperature_fig_test.plot_height = 600
 temperature_fig_test.plot_width = 800
@@ -248,6 +251,7 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
 #date_time_str = 'Jun 28 2018  7:40AM'
 #date_time_obj = datetime.datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
+
 
 def update():
     global testData
@@ -263,7 +267,7 @@ def update():
         print("testArray[GSheetRow.Timestamp.value]")
         dateStr = testArray[GSheetRow.Timestamp.value]
         print(dateStr)
-        date_time_obj = datetime.datetime.strptime(dateStr, '%d/%m/%Y %H:%M:%S')
+        date_time_obj = datetime.strptime(dateStr, '%d/%m/%Y %H:%M:%S')
         print("date_time_obj")
         print(date_time_obj)
         print('Date:', date_time_obj.date())
