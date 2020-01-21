@@ -86,7 +86,7 @@ def print_message(data):
         print("here print_message len(pushedDict)"); 
         initialLoadLength = len(pushedDict)
         print(initialLoadLength)
-        testData = pushedDict[initialLoadLength - 1])
+        testData = pushedDict[initialLoadLength - 1]
         print("here print_message len(testData)"); 
         print(len(testData))
         print("here print_message testData"); 
