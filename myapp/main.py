@@ -276,6 +276,7 @@ def update():
         print("date_time_obj")
         print(date_time_obj)
         mydate = date_time_obj + timedelta(days=N)
+        mytemp = testArray[GSheetRow.Temperature.value]
         print(type(testArray[GSheetRow.Timestamp.value]))
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
@@ -283,7 +284,7 @@ def update():
         #nuData = {'Timestamp': [date_time_obj],
         #   'Temperature': [testArray[GSheetRow.Temperature.value]]}
         nuData = {'Timestamp': [mydate],
-           'Temperature': [10]}
+           'Temperature': [mytemp + N]}
         testsource.stream(nuData)
         new = {'x': [random.random()],
                'y': [random.random()],
