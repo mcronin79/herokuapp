@@ -15,6 +15,7 @@ import random
 import socketio
 import logging
 import enum 
+import datetime
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
@@ -235,13 +236,23 @@ testsource = ColumnDataSource({'Timestamp': [], 'Temperature': []})
 newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width', x_range=[0, 1], y_range=[0, 1])
 newfig.circle(source=source, x='x', y='y', color='color', size=10)
   
-temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
+temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', 
+                              tools=tools, toolbar_location="above", y_range=[0, 30])
 temperature_fig_test.line(x='Timestamp', y='Temperature', source=testsource, color='magenta', legend='Temperature')
 
 temperature_fig_test.plot_height = 600
 temperature_fig_test.plot_width = 800
 temperature_fig_test.xaxis.axis_label = 'Time'
 temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
+
+
+#date_time_str = 'Jun 28 2018  7:40AM'
+#date_time_obj = datetime.datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
+
+print('Date:', date_time_obj.date())
+print('Time:', date_time_obj.time())
+print('Date-time:', date_time_obj)
+
 
 def update():
     global testData
@@ -255,14 +266,18 @@ def update():
         print("testArray")
         print(testArray)
         print("testArray[GSheetRow.Timestamp.value]")
-        print(testArray[GSheetRow.Timestamp.value])
+        dateStr = testArray[GSheetRow.Timestamp.value]
+        print(dateStr)
+        date_time_obj = datetime.datetime.strptime(dateStr, '%d/%m/%Y %H:%M:%S')
+        print("date_time_obj")
+        print(date_time_obj)
         print(type(testArray[GSheetRow.Timestamp.value]))
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
         print(type(testArray[GSheetRow.Temperature.value]))
-        #new = {'Timestamp': [testArray[GSheetRow.Timestamp.value]],
-        #   'Temperature': [testArray[GSheetRow.Temperature.value]]}
-        #testsource.stream(new)
+        nuData = {'Timestamp': [date_time_obj],
+           'Temperature': [testArray[GSheetRow.Temperature.value]]}
+        testsource.stream(nuData)
         new = {'x': [random.random()],
                'y': [random.random()],
                'color': [random.choice(['red', 'blue', 'green'])]}
@@ -549,8 +564,8 @@ temperature_fig = plot_temperature()
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 l1 = layout([[temperature_fig]], sizing_mode='fixed')
-#l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
 l2 = layout([[newfig]], sizing_mode='fixed')
+l3 = layout([[temperature_fig_test]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
@@ -558,11 +573,12 @@ l2 = layout([[newfig]], sizing_mode='fixed')
 #l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
 
 tab1 = Panel(child=l1,title="Air Quality")
-tab2 = Panel(child=l2,title="Metrics")
+tab2 = Panel(child=l2,title="Streaming Example")
+tab3 = Panel(child=l3,title="Streaming Dynamic")
 # Make a tab with the layout
 #tab3 = Panel(child=l3, title='Delay Histogram')
 #tab4 = Panel(child=l4, title='Streaming')
-tabs = Tabs(tabs=[ tab1, tab2 ])
+tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
 
 curdoc().add_periodic_callback(update, 30000)
 curdoc().title = "Hello, world!"
