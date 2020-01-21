@@ -251,13 +251,18 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
 #date_time_str = 'Jun 28 2018  7:40AM'
 #date_time_obj = datetime.datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
-
+N=1
 
 def update():
     global testData
+    global N
     print("GSheetRow.Timestamp.value")
     print(GSheetRow.Timestamp.value)
     
+    date_5_days_ago = datetime.now() - timedelta(days=5)
+    mydate = date_5_days_ago + timedelta(days=N)
+    print("mydate")
+    print(mydate)
     print("len(testData)")
     print(len(testData))
     if (len(testData) > 0):    
@@ -277,14 +282,17 @@ def update():
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
         print(type(testArray[GSheetRow.Temperature.value]))
-        nuData = {'Timestamp': [date_time_obj],
-           'Temperature': [testArray[GSheetRow.Temperature.value]]}
+        #nuData = {'Timestamp': [date_time_obj],
+        #   'Temperature': [testArray[GSheetRow.Temperature.value]]}
+        nuData = {'Timestamp': [mydate],
+           'Temperature': [10]}
         testsource.stream(nuData)
         new = {'x': [random.random()],
                'y': [random.random()],
                'color': [random.choice(['red', 'blue', 'green'])]}
         source.stream(new)
-        
+        N = N + 1
+        print('N = ', N)
     #global gsheetRows
     
     ##global testDataFrame
