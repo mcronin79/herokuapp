@@ -249,11 +249,6 @@ temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 #date_time_str = 'Jun 28 2018  7:40AM'
 #date_time_obj = datetime.datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
 
-print('Date:', date_time_obj.date())
-print('Time:', date_time_obj.time())
-print('Date-time:', date_time_obj)
-
-
 def update():
     global testData
     print("GSheetRow.Timestamp.value")
@@ -271,6 +266,9 @@ def update():
         date_time_obj = datetime.datetime.strptime(dateStr, '%d/%m/%Y %H:%M:%S')
         print("date_time_obj")
         print(date_time_obj)
+        print('Date:', date_time_obj.date())
+        print('Time:', date_time_obj.time())
+        print('Date-time:', date_time_obj)
         print(type(testArray[GSheetRow.Timestamp.value]))
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
