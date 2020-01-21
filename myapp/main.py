@@ -261,8 +261,8 @@ def update():
     
     date_5_days_ago = datetime.now() - timedelta(days=5)
     #mydate = date_5_days_ago + timedelta(days=N)
-    print("mydate")
-    print(mydate)
+    #print("mydate")
+    #print(mydate)
     print("len(testData)")
     print(len(testData))
     if (len(testData) > 0):    
