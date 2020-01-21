@@ -260,9 +260,13 @@ def update():
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
         print(type(testArray[GSheetRow.Temperature.value]))
-        new = {'Timestamp': [testArray[GSheetRow.Timestamp.value]],
-           'Temperature': [testArray[GSheetRow.Temperature.value]]}
-        testsource.stream(new)
+        #new = {'Timestamp': [testArray[GSheetRow.Timestamp.value]],
+        #   'Temperature': [testArray[GSheetRow.Temperature.value]]}
+        #testsource.stream(new)
+        new = {'x': [random.random()],
+               'y': [random.random()],
+               'color': [random.choice(['red', 'blue', 'green'])]}
+        source.stream(new)
         
     #global gsheetRows
     
@@ -545,8 +549,8 @@ temperature_fig = plot_temperature()
 #l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 l1 = layout([[temperature_fig]], sizing_mode='fixed')
-l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
-#l2 = layout([[newfig]], sizing_mode='fixed')
+#l2 = layout([[temperature_fig_test]], sizing_mode='fixed')
+l2 = layout([[newfig]], sizing_mode='fixed')
 
 #l4 = layout([[fig]], sizing_mode='fixed')
 
