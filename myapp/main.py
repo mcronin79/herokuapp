@@ -229,7 +229,7 @@ testTemperature = testDataFrame['Temperature']
 #    return p
 
 source = ColumnDataSource({'x': [], 'y': [], 'color': []})
-testsource = ColumnDataSource({'x': [], 'y': []})
+testsource = ColumnDataSource({'Timestamp': [], 'Temperature': []})
 
 
 newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width', x_range=[0, 1], y_range=[0, 1])
@@ -260,8 +260,8 @@ def update():
         print("testArray[GSheetRow.Temperature.value]")
         print(testArray[GSheetRow.Temperature.value])
         print(type(testArray[GSheetRow.Temperature.value]))
-        new = {'x': [testArray[GSheetRow.Timestamp.value]],
-           'y': [testArray[GSheetRow.Temperature.value]]}
+        new = {'Timestamp': [testArray[GSheetRow.Timestamp.value]],
+           'Temperature': [testArray[GSheetRow.Temperature.value]]}
         testsource.stream(new)
         
     #global gsheetRows
