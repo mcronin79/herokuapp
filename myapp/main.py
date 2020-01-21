@@ -86,8 +86,11 @@ def print_message(data):
         print("here print_message len(pushedDict)"); 
         initialLoadLength = len(pushedDict)
         print(initialLoadLength)
-        testData = pushedDict.pop(initialLoadLength - 1)
-        #print(testData)
+        testData = pushedDict[initialLoadLength - 1])
+        print("here print_message len(testData)"); 
+        print(len(testData))
+        print("here print_message testData"); 
+        print(testData)
     
     #newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
 
@@ -96,7 +99,9 @@ def print_message(data):
         testData = data
         streamRowLength = len(testData)
         print(streamRowLength)
-        testArray = testData.pop(0)
+        testArray = testData[0])
+        print("here print_message len(testArray)");
+        print(len(testArray))
         print("here print_message testArray");
         print(testArray)
         #if (len(testData) > 2):
@@ -246,7 +251,7 @@ def update():
     print("len(testData)")
     print(len(testData))
     if (len(testData) > 0):    
-        testArray = testData.pop(0)
+        testArray = testData
         print("testArray")
         print(testArray)
         print("testArray[GSheetRow.Timestamp.value]")
