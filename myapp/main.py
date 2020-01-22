@@ -231,8 +231,8 @@ testTemperature = testDataFrame['Temperature']
 
 #    return p
 
-date_5_days_ago = datetime.now() - timedelta(days=5)
-date_5_days_time = datetime.now() + timedelta(days=5)
+date_5_days_ago = datetime.now() - timedelta(hours=1)
+date_5_days_time = datetime.now() + timedelta(hours=5)
 
 source = ColumnDataSource({'x': [], 'y': [], 'color': []})
 testsource = ColumnDataSource({'Timestamp': [], 'Temperature': []})
