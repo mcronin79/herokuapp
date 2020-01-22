@@ -101,7 +101,7 @@ def print_message(data):
         streamRowLength = len(testData)
         print(streamRowLength)
         print("here print_message testData list");
-        print(testArray)
+        print(testData)
         testArray = testData[0]
         print("here print_message len(testArray)");
         print(len(testArray))
