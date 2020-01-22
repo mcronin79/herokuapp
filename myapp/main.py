@@ -88,18 +88,20 @@ def print_message(data):
         initialLoadLength = len(pushedDict)
         print(initialLoadLength)
         testData = pushedDict[initialLoadLength - 1]
-        print("here print_message len(testData)"); 
+        print("here print_message len(testData) dict"); 
         print(len(testData))
-        print("here print_message testData"); 
+        print("here print_message testData dict"); 
         print(testData)
     
     #newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
 
     if isinstance(data, list):
-        print("here print_message len(testData)");
-        testData = data
+        print("here print_message len(testData) list");
+        testData = data[0]
         streamRowLength = len(testData)
         print(streamRowLength)
+        print("here print_message testData list");
+        print(testArray)
         testArray = testData[0]
         print("here print_message len(testArray)");
         print(len(testArray))
