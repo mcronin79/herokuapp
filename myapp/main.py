@@ -19,8 +19,7 @@ from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
-  
-# creating enumerations using class 
+# Enumeration for GSheet Columns 
 class GSheetRow(enum.Enum): 
     Timestamp = 0
     Temperature = 1
@@ -59,15 +58,6 @@ gc = gspread.authorize(credentials)
 wks = gc.open('MyHiveDataSheet').sheet1
 gsheetRows = wks.get_all_values()
 headers = gsheetRows.pop(0) 
-firstRow = gsheetRows.pop(1)   
-listLen = len(gsheetRows)
-
-print("here 1")
-print(headers)
-print("here 2")  
-print(firstRow)
-print("here 3")
-print(listLen)
 
 df = pd.DataFrame(gsheetRows, columns=headers)
 
@@ -79,170 +69,30 @@ testData = []
 @sio.on('data')
 def print_message(data):
     global testData
-    #testData = data
+    print("New Streamed Data");
     
     if isinstance(data, dict):
-        print("here print_message len(data)"); 
         pushedDict = data['results']    
-        print("here print_message len(pushedDict)"); 
         initialLoadLength = len(pushedDict)
-        print(initialLoadLength)
         testData = pushedDict[initialLoadLength - 1]
-        print("here print_message len(testData) dict"); 
-        print(len(testData))
-        print("here print_message testData dict"); 
-        print(testData)
-    
-    #newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
-
+        
     if isinstance(data, list):
-        print("here print_message len(testData) list");
         testData = data[0]
-        streamRowLength = len(testData)
-        print(streamRowLength)
-        print("here print_message testData list");
-        print(testData)
-        testArray = testData[0]
-        print("here print_message len(testArray)");
-        print(len(testArray))
-        print("here print_message testArray");
-        print(testArray)
-        #if (len(testData) > 2):
-        #    testData.pop(0)
-        #print(testData)
-     
-    #if (len(testData) > 0):
-        #print("here update len(testData) is TRUE ")
-        #print(testData)
-        #newDataFrame = pd.DataFrame(
-        #    mydata,
-        #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
-#'Load_Cell4', 'VUSB', 'Weight_Code'])
-        #newDataFrame = pd.DataFrame(
-        #    testData,
-        #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
-        #print("here update 7");
-        #print(newDataFrame)
-        #print("here update 8");
-        #streamsource.stream(newDataFrame, 100)
-        #print("here update 9");
-        #testData = []
-        print("here print_message 10");
-
-print("here 3");
-
+        
 df.columns = [c.replace(" ","_") for c in df.columns]
 skinned_headers = df.dtypes.index
 
-# Turn it into a dataframe
-#testDataFrame = pd.DataFrame(testData, columns=headers)
-#[[u'18/01/2020 12:16:01', u'12.58', u'78.24', u'12.41', u'1104', u'590', u'802', u'876', u'869', u'1.580281', u'1.164177', u'1.672761', u'0.979311', u'2.077344', u'36215504']]
-mydata = [['18/01/2020 12:16:01', '12.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
-#data = [['Alex',10],['Bob',12],['Clarke',13]]
-
-testDataFrame = pd.DataFrame(
-    mydata,
-    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
-'Load_Cell4', 'VUSB', 'Weight_Code'])
-
-#testDataFrame = pd.DataFrame(
-#        {'Timestamp': [], 
-#         'Temperature': [], 
-#         'Humidity': [], 
-#         'RTD_Temperature': [], 
-#         'CO2': [], 
-#         'Weight1': [], 
-#         'Weight2': [], 
-#         'Weight3': [], 
-#         'Weight4': [], 
-#         'Load_Cell1': [], 
-#         'Load_Cell2': [], 
-#         'Load_Cell3': [], 
-#        'Load_Cell4': [], 
-#         'VUSB': [], 
-#         'Weight_Code': []},
-#        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
-#'Load_Cell4', 'VUSB', 'Weight_Code'])
-
-testDataFrame2 = pd.DataFrame(
-        {'Timestamp': [], 
-         'Temperature': [], 
-         'Humidity': [], 
-         'RTD_Temperature': [], 
-         'CO2': [], 
-         'Weight1': [], 
-         'Weight2': [], 
-         'Weight3': [], 
-         'Weight4': [], 
-         'Load_Cell1': [], 
-         'Load_Cell2': [], 
-         'Load_Cell3': [], 
-         'Load_Cell4': [], 
-         'VUSB': [], 
-         'Weight_Code': []},
-        columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 
-'Load_Cell4', 'VUSB', 'Weight_Code'])
-
-testDataFrame = testDataFrame.fillna(0)
-testDataFrame['Timestamp'] = pd.to_datetime(testDataFrame['Timestamp'], format='%d/%m/%Y %H:%M:%S')
-testDataFrame['Temperature'] = testDataFrame['Temperature'].astype(float)
-testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
-testDataFrame['Humidity'] = testDataFrame['Humidity'].astype(float)
-
-testDataFrame['Weight_Code'] = testDataFrame['Weight_Code'].astype(float)
-testDataFrame['CO2'] = testDataFrame['CO2'].astype(float)
-
-testDataFrame['Load_Cell1'] = testDataFrame['Load_Cell1'].astype(float)
-testDataFrame['Load_Cell2'] = testDataFrame['Load_Cell2'].astype(float)
-testDataFrame['Load_Cell3'] = testDataFrame['Load_Cell3'].astype(float)
-testDataFrame['Load_Cell4'] = testDataFrame['Load_Cell4'].astype(float)
-
-testDataFrame['VUSB'] = testDataFrame['VUSB'].astype(float)
-#testDataFrame['RTD_Temperature'] = testDataFrame['RTD_Temperature'].astype(float)#.apply(lambda x: x - 0.15)
-
-print("here 6 testDataFrame2");
-print(testDataFrame2)
-print("here 6");
-print(testDataFrame)
-
-streamsource = ColumnDataSource(testDataFrame)
-
-print("here print_message type(streamsource)"); 
-print(type(streamsource))
-testTime = testDataFrame['Timestamp']
-testTemperature = testDataFrame['Temperature']
-
-
-#def plot_temperature_test():
-#    global streamsource
-##    print("here print_message type(streamsource)"); 
-#    print(type(streamsource))
-#    testTime = testDataFrame['Timestamp']
-#    testTemperature = testDataFrame['Temperature']
-#    p = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
-#    p.line(testTime, testTemperature, source=streamsource, color='magenta', legend='Temperature')
-#    #p.line(time, str_temperature, color='magenta', legend='Temperature')
-#    #p.line('Timestamp', 'RTD_Temperature', source=streamsource, color='green', legend='RTD_Temperature')
-
-#    p.plot_height = 600
-#    p.plot_width = 800
-#    p.xaxis.axis_label = 'Time'
-#    p.yaxis.axis_label = 'Temperature (°C)'
-
-#    return p
-
-date_5_days_ago = datetime.now() - timedelta(hours=1)
-date_5_days_time = datetime.now() + timedelta(hours=5)
+startRange = datetime.now() - timedelta(hours=1)
+endRange = datetime.now() + timedelta(hours=5)
 
 source = ColumnDataSource({'x': [], 'y': [], 'color': []})
 testsource = ColumnDataSource({'Timestamp': [], 'Temperature': []})
-
 
 newfig = figure(title='Streaming Circle Plot!', sizing_mode='scale_width', x_range=[0, 1], y_range=[0, 1])
 newfig.circle(source=source, x='x', y='y', color='color', size=10)
   
 temperature_fig_test = figure(title="Temperature Realtime", title_location="above", x_axis_type='datetime', 
-                              tools=tools, toolbar_location="above", x_range=[date_5_days_ago, date_5_days_time], y_range=[0, 30])
+                              tools=tools, toolbar_location="above", x_range=[startRange, endRange], y_range=[0, 30])
 temperature_fig_test.line(x='Timestamp', y='Temperature', source=testsource, color='magenta', legend='Temp')
 
 temperature_fig_test.plot_height = 600
@@ -250,88 +100,25 @@ temperature_fig_test.plot_width = 800
 temperature_fig_test.xaxis.axis_label = 'Time'
 temperature_fig_test.yaxis.axis_label = 'Temperature (°C)'
 
-
-#date_time_str = 'Jun 28 2018  7:40AM'
-#date_time_obj = datetime.datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S')
-#N=1
-
 def update():
     global testData
-    #global N
-    print("GSheetRow.Timestamp.value")
-    print(GSheetRow.Timestamp.value)
+    print("Periodic Update")
     
-    date_5_days_ago = datetime.now() - timedelta(days=5)
-    #mydate = date_5_days_ago + timedelta(days=N)
-    #print("mydate")
-    #print(mydate)
-    print("len(testData)")
-    print(len(testData))
     if (len(testData) > 0):    
         testArray = testData
-        print("testArray")
-        print(testArray)
-        print("testArray[GSheetRow.Timestamp.value]")
         dateStr = testArray[GSheetRow.Timestamp.value]
-        print(dateStr)
-        date_time_obj = datetime.strptime(dateStr, '%d/%m/%Y %H:%M:%S')
-        print("date_time_obj")
-        print(date_time_obj)
-        mydate = date_time_obj
-        mytemp = float(testArray[GSheetRow.Temperature.value])
-        print(type(testArray[GSheetRow.Timestamp.value]))
-        print("testArray[GSheetRow.Temperature.value]")
-        print(testArray[GSheetRow.Temperature.value])
-        print(type(testArray[GSheetRow.Temperature.value]))
-        #nuData = {'Timestamp': [date_time_obj],
-        #   'Temperature': [testArray[GSheetRow.Temperature.value]]}
-        nuData = {'Timestamp': [mydate],
-           'Temperature': [mytemp]}
+        formattedDttm = datetime.strptime(dateStr, '%d/%m/%Y %H:%M:%S')
+        formattedTemp = float(testArray[GSheetRow.Temperature.value])
+        nuData = {'Timestamp': [formattedDttm],
+           'Temperature': [formattedTemp]}
         testsource.stream(nuData)
         new = {'x': [random.random()],
                'y': [random.random()],
                'color': [random.choice(['red', 'blue', 'green'])]}
         source.stream(new)
-        #N = N + 1
-        #print('N = ', N
         testData = []
         print("Finished Update")
-    #global gsheetRows
     
-    ##global testDataFrame
-    #global pd
-    #global streamsource
-
-    #newmydata = [['18/01/2020 12:20:01', '22.58', '78.24', '12.41', '1104', '590', '802', '876', '869', '1.580281', '1.164177', '1.672761', '0.979311', '2.077344', '36215504']]
-
-    #print("here print_message type(gsheetRows)"); 
-    #print(type(gsheetRows))
-    #print("here print_message type(testData)"); 
-    #print(type(testData))
-    #print("here print_message type(testDataFrame)"); 
-    #print(type(testDataFrame))
-    #print("here print_message type(pd)"); 
-    #print(type(pd))
-    #print("here print_message type(streamsource)"); 
-    #print(type(streamsource))
-    #if (len(testData) > 0):
-    #print("here update len(testData) is TRUE ")
-    #print(testData)
-    #newDataFrame = pd.DataFrame(
-    #    newmydata,
-    #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
-    #newDataFrame = pd.DataFrame(
-    #    testData,
-    #    columns=['Timestamp', 'Temperature', 'Humidity', 'RTD_Temperature', 'CO2', 'Weight1', 'Weight2', 'Weight3', 'Weight4', 'Load_Cell1', 'Load_Cell2', 'Load_Cell3', 'Load_Cell4', 'VUSB', 'Weight_Code'])
-    #print("here update 7");
-    #print(newDataFrame)
-    #print("here update 8");
-    #streamsource.stream(newDataFrame, 100)
-    #print("here update 9");
-    #testData = []
-    print("here update 10");
-
-
 str_temperature = df['Temperature']
 str_rtd_temperature = df['RTD_Temperature']
 str_humidity = df['Humidity']
