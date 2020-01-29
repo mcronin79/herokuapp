@@ -19,6 +19,9 @@ from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
+print("Start Time");
+
+timeA = datetime.now()
 # Enumeration for GSheet Columns 
 class GSheetRow(enum.Enum): 
     Timestamp = 0
@@ -48,6 +51,8 @@ logging.getLogger('engineio').setLevel(logging.ERROR)
 
 tools = 'pan', 'wheel_zoom', 'box_zoom', 'reset'
 
+print("Start Time Before Sheets Load");
+timeB = datetime.now()
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 json_creds = os.getenv("GOOGLE_SHEETS_CREDS_JSON")
 
@@ -60,6 +65,9 @@ gsheetRows = wks.get_all_values()
 headers = gsheetRows.pop(0) 
 
 df = pd.DataFrame(gsheetRows, columns=headers)
+print("Start Time After Sheets Load");
+timeC = datetime.now()
+print(timeC - timeB)
 
 sio = socketio.Client()
 sio.connect('https://modified-sheets-stream.herokuapp.com/')
@@ -159,6 +167,9 @@ rtd_temperature = df['RTD_Temperature']
 humidity = df['Humidity']
 time_for_weight = non_z_weights['Timestamp'] # drop times where weight is recoded as zero
 
+print("Time to load dataframes");
+timeD = datetime.now()
+print(timeD - timeC)
 
 def plot_temperature():
     p = figure(title="Temperature", title_location="above", x_axis_type='datetime', tools=tools, toolbar_location="above")
@@ -347,6 +358,9 @@ def plot_weight():
 
     return p
 
+print("Before calling plot functions");
+timeE = datetime.now()
+
 temperature_fig = plot_temperature()
 #temperature_fig_test = plot_temperature_test()
 
@@ -358,12 +372,21 @@ voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
 weight_fig = plot_weight()
 CO2_fig = plot_CO2()
 
+print("After calling plot functions");
+timeF = datetime.now()
+print(timeF - timeE)
+
+
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
 l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 #l1 = layout([[temperature_fig]], sizing_mode='fixed')
 #l2 = layout([[newfig]], sizing_mode='fixed')
 l3 = layout([[temperature_fig_test]], sizing_mode='fixed')
+
+print("After building layouts");
+timeG = datetime.now()
+print(timeG - timeF)
 
 tab1 = Panel(child=l1,title="Air Quality")
 tab2 = Panel(child=l2,title="Metrics")
@@ -372,6 +395,18 @@ tab3 = Panel(child=l3,title="Streaming")
 # Make a tab with the layout
 tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
 
+print("After building tabs");
+timeH = datetime.now()
+print(timeH - timeG)
+
 curdoc().add_periodic_callback(update, 30000)
 curdoc().title = "Hello, world!"
+
+print("Before Rendering tabs");
+timeI = datetime.now()
+
 curdoc().add_root(tabs)
+
+print("After Rendering tabs");
+timeJ = datetime.now()
+print(timeJ - timeI)
