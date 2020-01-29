@@ -350,34 +350,26 @@ def plot_weight():
 temperature_fig = plot_temperature()
 #temperature_fig_test = plot_temperature_test()
 
-#humidity_fig = plot_humidity()
-#temp_and_hum_fig = plot_temp_and_humidity()
-#load_cell_voltages_fig = plot_loadcell_voltages()
-#load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
-#voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
-#weight_fig = plot_weight()
-#CO2_fig = plot_CO2()
+humidity_fig = plot_humidity()
+temp_and_hum_fig = plot_temp_and_humidity()
+load_cell_voltages_fig = plot_loadcell_voltages()
+load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+weight_fig = plot_weight()
+CO2_fig = plot_CO2()
 
+l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
+l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
-#l1 = layout([[temperature_fig, load_cell_voltages_fig]], sizing_mode='stretch_both')
-#l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
-#l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
-
-l1 = layout([[temperature_fig]], sizing_mode='fixed')
-l2 = layout([[newfig]], sizing_mode='fixed')
+#l1 = layout([[temperature_fig]], sizing_mode='fixed')
+#l2 = layout([[newfig]], sizing_mode='fixed')
 l3 = layout([[temperature_fig_test]], sizing_mode='fixed')
 
-#l4 = layout([[fig]], sizing_mode='fixed')
-
-#l1 = gridplot([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='stretch_both')
-#l2 = gridplot([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='stretch_both')
-
 tab1 = Panel(child=l1,title="Air Quality")
-tab2 = Panel(child=l2,title="Streaming Example")
-tab3 = Panel(child=l3,title="Streaming Dynamic")
+tab2 = Panel(child=l2,title="Metrics")
+tab3 = Panel(child=l3,title="Streaming")
+
 # Make a tab with the layout
-#tab3 = Panel(child=l3, title='Delay Histogram')
-#tab4 = Panel(child=l4, title='Streaming')
 tabs = Tabs(tabs=[ tab1, tab2, tab3 ])
 
 curdoc().add_periodic_callback(update, 30000)
