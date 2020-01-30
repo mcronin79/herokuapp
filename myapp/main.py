@@ -15,6 +15,7 @@ import random
 import socketio
 import logging
 import enum 
+import threading
 from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
@@ -361,9 +362,26 @@ def plot_weight():
 print("Before calling plot functions");
 timeE = datetime.now()
 
+#def thread_function(name):
+#    logging.info("Thread %s: starting", name)
+#    temperature_fig = plot_temperature()
+#    #temperature_fig_test = plot_temperature_test()
+#    humidity_fig = plot_humidity()
+#    temp_and_hum_fig = plot_temp_and_humidity()
+#    load_cell_voltages_fig = plot_loadcell_voltages()
+ #   load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+#    voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+#    weight_fig = plot_weight()
+#    CO2_fig = plot_CO2()
+#    logging.info("Thread %s: finishing", name)
+    
+#x = threading.Thread(target=thread_function, args=(1,))
+#logging.info("Main : before running thread")
+#x.start()
+
+
 temperature_fig = plot_temperature()
 #temperature_fig_test = plot_temperature_test()
-
 humidity_fig = plot_humidity()
 temp_and_hum_fig = plot_temp_and_humidity()
 load_cell_voltages_fig = plot_loadcell_voltages()
@@ -371,7 +389,7 @@ load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
 voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
 weight_fig = plot_weight()
 CO2_fig = plot_CO2()
-
+    
 print("After calling plot functions");
 timeF = datetime.now()
 print(timeF - timeE)
