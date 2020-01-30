@@ -372,25 +372,27 @@ weight_fig
 CO2_fig
 
 def thread_function1(name):
+    global temperature_fig, humidity_fig, temp_and_hum_fig, load_cell_voltages_fig
     timeT1 = datetime.now()
     print("Thread1 starting");
     print(timeT1);
-    global temperature_fig = plot_temperature()
+    temperature_fig = plot_temperature()
     #temperature_fig_test = plot_temperature_test()
-    global humidity_fig = plot_humidity()
-    global temp_and_hum_fig = plot_temp_and_humidity()
-    global load_cell_voltages_fig = plot_loadcell_voltages()
+    humidity_fig = plot_humidity()
+    temp_and_hum_fig = plot_temp_and_humidity()
+    load_cell_voltages_fig = plot_loadcell_voltages()
     print("Thread1 finishing");    
     print(datetime.now() - timeT1)
     
 def thread_function2(name):
+    global load_cell_voltages_ac_fig, voltages_temperature_means_fig, weight_fig, CO2_fig
     timeT2 = datetime.now()
     print("Thread2 starting");
     print(timeT2);
-    global load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
-    global voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
-    global weight_fig = plot_weight()
-    global CO2_fig = plot_CO2()
+    load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+    voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+    weight_fig = plot_weight()
+    CO2_fig = plot_CO2()
     print("Thread2 finishing");
     print(datetime.now() - timeT2)
     
