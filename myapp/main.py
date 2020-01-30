@@ -16,6 +16,7 @@ import socketio
 import logging
 import enum 
 import threading
+import multiprocessing
 from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
@@ -419,11 +420,11 @@ def thread_function5(name):
     print("Thread5 finishing");    
     print(datetime.now() - timeT1)
     
-thread1 = threading.Thread(target=thread_function1, args=("Thread-1", ))
-thread2 = threading.Thread(target=thread_function2, args=("Thread-2", ))
-thread3 = threading.Thread(target=thread_function3, args=("Thread-3", ))
-thread4 = threading.Thread(target=thread_function4, args=("Thread-4", ))
-thread5 = threading.Thread(target=thread_function5, args=("Thread-5", ))
+thread1 = multiprocessing.Process(target=thread_function1, args=("Thread-1", ))
+thread2 = multiprocessing.Process(target=thread_function2, args=("Thread-2", ))
+thread3 = multiprocessing.Process(target=thread_function3, args=("Thread-3", ))
+thread4 = multiprocessing.Process(target=thread_function4, args=("Thread-4", ))
+thread5 = multiprocessing.Process(target=thread_function5, args=("Thread-5", ))
 
 thread1.start()
 thread2.start()
