@@ -17,11 +17,15 @@ import logging
 import enum 
 import threading
 import multiprocessing
+import Queue
+
 from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 import scipy.ndimage.filters as filters
 
 print("Start Time");
+
+q = Queue.Queue()
 
 timeA = datetime.now()
 # Enumeration for GSheet Columns 
@@ -394,7 +398,7 @@ def thread_function1(name):
     print(type(humidity_fig)) 
     print("After thread_function1 Type temp_and_hum_fig");
     print(type(temp_and_hum_fig)) 
-
+    q.put(temperature_fig)
     print("Thread1 finishing");    
     print(datetime.now() - timeT1)
    
@@ -458,6 +462,11 @@ print(timeF - timeE)
 
 print("Type temperature_fig");
 print(type(temperature_fig)) 
+
+new_temperature_fig = q.get()
+print("Type new_temperature_fig");
+print(type(new_temperature_fig)) 
+
 print("Type humidity_fig");
 print(type(humidity_fig)) 
 print("Type temp_and_hum_fig");
