@@ -374,12 +374,27 @@ CO2_fig = None
 
 def thread_function1(name):
     global temperature_fig, humidity_fig, temp_and_hum_fig
+    print("thread_function1 Type temperature_fig");
+    print(type(temperature_fig)) 
+    print("thread_function1 Type humidity_fig");
+    print(type(humidity_fig)) 
+    print("thread_function1 Type temp_and_hum_fig");
+    print(type(temp_and_hum_fig)) 
+    
     timeT1 = datetime.now()
     print("Thread1 starting");
     print(timeT1);
     temperature_fig = plot_temperature()
     humidity_fig = plot_humidity()
     temp_and_hum_fig = plot_temp_and_humidity()
+    
+    print("After thread_function1 Type temperature_fig");
+    print(type(temperature_fig)) 
+    print("After thread_function1 Type humidity_fig");
+    print(type(humidity_fig)) 
+    print("After thread_function1 Type temp_and_hum_fig");
+    print(type(temp_and_hum_fig)) 
+
     print("Thread1 finishing");    
     print(datetime.now() - timeT1)
    
@@ -440,6 +455,15 @@ thread5.join()
 print("After calling plot functions");
 timeF = datetime.now()
 print(timeF - timeE)
+
+print("Type temperature_fig");
+print(type(temperature_fig)) 
+print("Type humidity_fig");
+print(type(humidity_fig)) 
+print("Type temp_and_hum_fig");
+print(type(temp_and_hum_fig)) 
+print("Type CO2_fig");
+print(type(CO2_fig)) 
 
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
 l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
