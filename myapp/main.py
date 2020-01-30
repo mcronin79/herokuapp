@@ -379,17 +379,42 @@ timeE = datetime.now()
 #logging.info("Main : before running thread")
 #x.start()
 
-
+timeT = datetime.now()
 temperature_fig = plot_temperature()
 #temperature_fig_test = plot_temperature_test()
+timeU = datetime.now()
 humidity_fig = plot_humidity()
+timeV = datetime.now()
 temp_and_hum_fig = plot_temp_and_humidity()
+timeW = datetime.now()
 load_cell_voltages_fig = plot_loadcell_voltages()
+timeX = datetime.now()
 load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+timeY = datetime.now()
 voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+timeZ = datetime.now()
 weight_fig = plot_weight()
+timeR = datetime.now()
 CO2_fig = plot_CO2()
+timeS = datetime.now()
     
+print("Time to render temperature_fig");
+print(timeU - timeT)
+print("Time to render humidity_fig");
+print(timeV - timeU)
+print("Time to render temp_and_hum_fig");
+print(timeW - timeV)
+print("Time to render load_cell_voltages_fig");
+print(timeX - timeW)
+print("Time to render load_cell_voltages_ac_fig");
+print(timeY - timeX)
+print("Time to render voltages_temperature_means_fig");
+print(timeZ - timeY)
+print("Time to render weight_fig");
+print(timeR - timeZ)
+print("Time to render CO2_fig");
+print(timeS - timeR)
+
 print("After calling plot functions");
 timeF = datetime.now()
 print(timeF - timeE)
