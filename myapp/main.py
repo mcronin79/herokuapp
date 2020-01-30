@@ -362,14 +362,14 @@ def plot_weight():
 print("Before calling plot functions");
 timeE = datetime.now()
 
-temperature_fig
-humidity_fig
-temp_and_hum_fig
-load_cell_voltages_fig
-load_cell_voltages_ac_fig
-voltages_temperature_means_fig
-weight_fig
-CO2_fig
+temperature_fig = None
+humidity_fig = None
+temp_and_hum_fig = None
+load_cell_voltages_fig = None
+load_cell_voltages_ac_fig = None
+voltages_temperature_means_fig = None
+weight_fig = None
+CO2_fig = None
 
 def thread_function1(name):
     global temperature_fig, humidity_fig, temp_and_hum_fig, load_cell_voltages_fig
