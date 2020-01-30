@@ -16,8 +16,8 @@ import socketio
 import logging
 import enum 
 import threading
-import multiprocessing
-import Queue
+#import multiprocessing
+from multiprocessing import Process, Queue
 
 from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
@@ -25,7 +25,7 @@ import scipy.ndimage.filters as filters
 
 print("Start Time");
 
-q = Queue.Queue()
+q = Queue()
 
 timeA = datetime.now()
 # Enumeration for GSheet Columns 
@@ -398,7 +398,8 @@ def thread_function1(name):
     print(type(humidity_fig)) 
     print("After thread_function1 Type temp_and_hum_fig");
     print(type(temp_and_hum_fig)) 
-    q.put(temperature_fig)
+    #q.put(temperature_fig)
+    q.put([42, None, 'hello'])
     print("Thread1 finishing");    
     print(datetime.now() - timeT1)
    
@@ -439,11 +440,11 @@ def thread_function5(name):
     print("Thread5 finishing");    
     print(datetime.now() - timeT1)
     
-thread1 = multiprocessing.Process(target=thread_function1, args=("Thread-1", ))
-thread2 = multiprocessing.Process(target=thread_function2, args=("Thread-2", ))
-thread3 = multiprocessing.Process(target=thread_function3, args=("Thread-3", ))
-thread4 = multiprocessing.Process(target=thread_function4, args=("Thread-4", ))
-thread5 = multiprocessing.Process(target=thread_function5, args=("Thread-5", ))
+thread1 = Process(target=thread_function1, args=("Thread-1", ))
+thread2 = Process(target=thread_function2, args=("Thread-2", ))
+thread3 = Process(target=thread_function3, args=("Thread-3", ))
+thread4 = Process(target=thread_function4, args=("Thread-4", ))
+thread5 = Process(target=thread_function5, args=("Thread-5", ))
 
 thread1.start()
 thread2.start()
@@ -463,8 +464,8 @@ print(timeF - timeE)
 print("Type temperature_fig");
 print(type(temperature_fig)) 
 
-new_temperature_fig = q.get()
 print("Type new_temperature_fig");
+new_temperature_fig = q.get()
 print(type(new_temperature_fig)) 
 
 print("Type humidity_fig");
