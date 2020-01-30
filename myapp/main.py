@@ -372,80 +372,73 @@ weight_fig = None
 CO2_fig = None
 
 def thread_function1(name):
-    global temperature_fig, humidity_fig, temp_and_hum_fig, load_cell_voltages_fig
+    global temperature_fig, humidity_fig, temp_and_hum_fig
     timeT1 = datetime.now()
     print("Thread1 starting");
     print(timeT1);
     temperature_fig = plot_temperature()
-    #temperature_fig_test = plot_temperature_test()
     humidity_fig = plot_humidity()
     temp_and_hum_fig = plot_temp_and_humidity()
-    load_cell_voltages_fig = plot_loadcell_voltages()
     print("Thread1 finishing");    
     print(datetime.now() - timeT1)
-    
+   
 def thread_function2(name):
-    global load_cell_voltages_ac_fig, voltages_temperature_means_fig, weight_fig, CO2_fig
-    timeT2 = datetime.now()
+    global load_cell_voltages_fig
+    timeT1 = datetime.now()
     print("Thread2 starting");
-    print(timeT2);
+    print(timeT1);
+    load_cell_voltages_fig = plot_loadcell_voltages()
+    print("Thread2 finishing");    
+    print(datetime.now() - timeT1)
+  
+def thread_function3(name):
+    global load_cell_voltages_ac_fig
+    timeT1 = datetime.now()
+    print("Thread3 starting");
+    print(timeT1);
     load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
+    print("Thread3 finishing");    
+    print(datetime.now() - timeT1)
+
+def thread_function4(name):
+    global voltages_temperature_means_fig
+    timeT1 = datetime.now()
+    print("Thread4 starting");
+    print(timeT1);
     voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
+    print("Thread4 finishing");    
+    print(datetime.now() - timeT1)
+
+def thread_function5(name):
+    global weight_fig, CO2_fig
+    timeT1 = datetime.now()
+    print("Thread5 starting");
+    print(timeT1);
     weight_fig = plot_weight()
     CO2_fig = plot_CO2()
-    print("Thread2 finishing");
-    print(datetime.now() - timeT2)
+    print("Thread5 finishing");    
+    print(datetime.now() - timeT1)
     
 thread1 = threading.Thread(target=thread_function1, args=("Thread-1", ))
 thread2 = threading.Thread(target=thread_function2, args=("Thread-2", ))
+thread3 = threading.Thread(target=thread_function3, args=("Thread-3", ))
+thread4 = threading.Thread(target=thread_function4, args=("Thread-4", ))
+thread5 = threading.Thread(target=thread_function5, args=("Thread-5", ))
 
 thread1.start()
 thread2.start()
+thread3.start()
+thread4.start()
+thread5.start()
 thread1.join()
 thread2.join()
-
-#timeT = datetime.now()
-#temperature_fig = plot_temperature()
-
-#temperature_fig_test = plot_temperature_test()
-
-#timeU = datetime.now()
-#humidity_fig = plot_humidity()
-#timeV = datetime.now()
-#temp_and_hum_fig = plot_temp_and_humidity()
-#timeW = datetime.now()
-#load_cell_voltages_fig = plot_loadcell_voltages()
-#timeX = datetime.now()
-#load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
-#timeY = datetime.now()
-#voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
-#timeZ = datetime.now()
-#weight_fig = plot_weight()
-#timeR = datetime.now()
-#CO2_fig = plot_CO2()
-#timeS = datetime.now()
-    
-#print("Time to render temperature_fig");
-#print(timeU - timeT)
-#print("Time to render humidity_fig");
-#print(timeV - timeU)
-#print("Time to render temp_and_hum_fig");
-#print(timeW - timeV)
-#print("Time to render load_cell_voltages_fig");
-#print(timeX - timeW)
-#print("Time to render load_cell_voltages_ac_fig");
-#print(timeY - timeX)
-#print("Time to render voltages_temperature_means_fig");
-#print(timeZ - timeY)
-#print("Time to render weight_fig");
-#print(timeR - timeZ)
-#print("Time to render CO2_fig");
-#print(timeS - timeR)
+thread3.join()
+thread4.join()
+thread5.join()
 
 print("After calling plot functions");
 timeF = datetime.now()
 print(timeF - timeE)
-
 
 l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
 l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
