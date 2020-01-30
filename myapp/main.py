@@ -456,6 +456,8 @@ new_load_cell_voltages_fig = p.apply_async(thread_function2, ("Thread-1",))
 new_load_cell_voltages_ac_fig = p.apply_async(thread_function3, ("Thread-2",))
 new_voltages_temperature_means_fig = p.apply_async(thread_function4, ("Thread-3",))
 new_weight_fig = p.apply_async(thread_function5, ("Thread-4",))
+p.close()
+p.join()
 
 #print(result.get(timeout=1))
 #thread1 = Process(target=thread_function1, args=("Thread-1", ))
