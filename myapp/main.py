@@ -452,12 +452,17 @@ def thread_function5(name):
 #p = Process(target=f, args=(num, arr))
 
 p = Pool(4)
-new_load_cell_voltages_fig = p.apply_async(thread_function2, ("Thread-1",))
-new_load_cell_voltages_ac_fig = p.apply_async(thread_function3, ("Thread-2",))
-new_voltages_temperature_means_fig = p.apply_async(thread_function4, ("Thread-3",))
-new_weight_fig = p.apply_async(thread_function5, ("Thread-4",))
+result1 = p.apply_async(thread_function2, ("Thread-1",))
+result2 = p.apply_async(thread_function3, ("Thread-2",))
+result3 = p.apply_async(thread_function4, ("Thread-3",))
+result4 = p.apply_async(thread_function5, ("Thread-4",))
 p.close()
 p.join()
+
+new_load_cell_voltages_fig = result1.get()
+new_load_cell_voltages_ac_fig = result2.get()
+new_voltages_temperature_means_fig = result3.get()
+new_weight_fig = result4.get()
 
 #print(result.get(timeout=1))
 #thread1 = Process(target=thread_function1, args=("Thread-1", ))
@@ -499,7 +504,7 @@ print("Type new_voltages_temperature_means_fig");
 print(type(new_voltages_temperature_means_fig)) 
 
 #l1 = layout([[new_temperature_fig, new_humidity_fig], [new_temp_and_hum_fig, new_CO2_fig]], sizing_mode='fixed')
-l1 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
+l1 = layout([[new_load_cell_voltages_fig, new_weight_fig], [new_load_cell_voltages_ac_fig, new_voltages_temperature_means_fig]], sizing_mode='fixed')
 
 #l1 = layout([[temperature_fig]], sizing_mode='fixed')
 l2 = layout([[newfig]], sizing_mode='fixed')
