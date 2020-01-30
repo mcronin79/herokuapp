@@ -377,7 +377,7 @@ weight_fig = None
 CO2_fig = None
 
 def thread_function1(name):
-    global temperature_fig, humidity_fig, temp_and_hum_fig
+    global temperature_fig, humidity_fig, temp_and_hum_fig, CO2_fig
     print("thread_function1 Type temperature_fig");
     print(type(temperature_fig)) 
     print("thread_function1 Type humidity_fig");
@@ -391,6 +391,7 @@ def thread_function1(name):
     temperature_fig = plot_temperature()
     humidity_fig = plot_humidity()
     temp_and_hum_fig = plot_temp_and_humidity()
+    CO2_fig = plot_CO2()
     
     print("After thread_function1 Type temperature_fig");
     print(type(temperature_fig)) 
@@ -399,7 +400,10 @@ def thread_function1(name):
     print("After thread_function1 Type temp_and_hum_fig");
     print(type(temp_and_hum_fig)) 
     #q.put(temperature_fig)
-    q.put([42, None, 'hello'])
+    q.put(temperature_fig)
+    q.put(humidity_fig)
+    q.put(temp_and_hum_fig)
+    q.put(CO2_fig)
     print("Thread1 finishing");    
     print(datetime.now() - timeT1)
    
@@ -431,12 +435,11 @@ def thread_function4(name):
     print(datetime.now() - timeT1)
 
 def thread_function5(name):
-    global weight_fig, CO2_fig
+    global weight_fig
     timeT1 = datetime.now()
     print("Thread5 starting");
     print(timeT1);
     weight_fig = plot_weight()
-    CO2_fig = plot_CO2()
     print("Thread5 finishing");    
     print(datetime.now() - timeT1)
     
@@ -466,6 +469,9 @@ print(type(temperature_fig))
 
 print("Type new_temperature_fig");
 new_temperature_fig = q.get()
+new_humidity_fig = q.get()
+new_temp_and_hum_fig = q.get()
+new_CO2_fig = q.get()
 print(type(new_temperature_fig)) 
 
 print("Type humidity_fig");
@@ -475,11 +481,11 @@ print(type(temp_and_hum_fig))
 print("Type CO2_fig");
 print(type(CO2_fig)) 
 
-l1 = layout([[temperature_fig, humidity_fig], [temp_and_hum_fig, CO2_fig]], sizing_mode='fixed')
-l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
+l1 = layout([[new_temperature_fig, new_humidity_fig], [new_temp_and_hum_fig, new_CO2_fig]], sizing_mode='fixed')
+#l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 #l1 = layout([[temperature_fig]], sizing_mode='fixed')
-#l2 = layout([[newfig]], sizing_mode='fixed')
+l2 = layout([[newfig]], sizing_mode='fixed')
 l3 = layout([[temperature_fig_test]], sizing_mode='fixed')
 
 print("After building layouts");
