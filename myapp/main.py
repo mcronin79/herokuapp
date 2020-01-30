@@ -17,7 +17,7 @@ import logging
 import enum 
 import threading
 #import multiprocessing
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Value, Array, Pool
 
 from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
@@ -408,57 +408,72 @@ def thread_function1(name):
     print(datetime.now() - timeT1)
    
 def thread_function2(name):
-    global load_cell_voltages_fig
+    #global load_cell_voltages_fig
     timeT1 = datetime.now()
     print("Thread2 starting");
     print(timeT1);
     load_cell_voltages_fig = plot_loadcell_voltages()
     print("Thread2 finishing");    
     print(datetime.now() - timeT1)
+    return load_cell_voltages_fig
   
 def thread_function3(name):
-    global load_cell_voltages_ac_fig
+    #global load_cell_voltages_ac_fig
     timeT1 = datetime.now()
     print("Thread3 starting");
     print(timeT1);
     load_cell_voltages_ac_fig = plot_loadcell_voltages_ac()
     print("Thread3 finishing");    
     print(datetime.now() - timeT1)
+    return load_cell_voltages_ac_fig
 
 def thread_function4(name):
-    global voltages_temperature_means_fig
+    #global voltages_temperature_means_fig
     timeT1 = datetime.now()
     print("Thread4 starting");
     print(timeT1);
     voltages_temperature_means_fig = plot_loadcell_voltages_and_temperature_means()
     print("Thread4 finishing");    
     print(datetime.now() - timeT1)
+    return voltages_temperature_means_fig
 
 def thread_function5(name):
-    global weight_fig
+    #global weight_fig
     timeT1 = datetime.now()
     print("Thread5 starting");
     print(timeT1);
     weight_fig = plot_weight()
     print("Thread5 finishing");    
     print(datetime.now() - timeT1)
+    return weight_fig
     
-thread1 = Process(target=thread_function1, args=("Thread-1", ))
-thread2 = Process(target=thread_function2, args=("Thread-2", ))
-thread3 = Process(target=thread_function3, args=("Thread-3", ))
-thread4 = Process(target=thread_function4, args=("Thread-4", ))
-thread5 = Process(target=thread_function5, args=("Thread-5", ))
+#num = Value('d', 0.0)
+#arr = Array('i', range(10))    
+#p = Process(target=f, args=(num, arr))
 
-thread1.start()
-thread2.start()
-thread3.start()
-thread4.start()
-thread5.start()
-thread1.join()
-thread2.join()
-thread3.join()
-thread4.join()
-thread5.join()
+p = Pool(4)
+new_load_cell_voltages_fig = p.apply_async(thread_function2, ("Thread-1",))
+new_load_cell_voltages_ac_fig = p.apply_async(thread_function3, ("Thread-2",))
+new_voltages_temperature_means_fig = p.apply_async(thread_function4, ("Thread-3",))
+new_weight_fig = p.apply_async(thread_function5, ("Thread-4",))
+
+#print(result.get(timeout=1))
+#thread1 = Process(target=thread_function1, args=("Thread-1", ))
+#thread2 = Process(target=thread_function2, args=("Thread-2", ))
+#thread3 = Process(target=thread_function3, args=("Thread-3", ))
+#thread4 = Process(target=thread_function4, args=("Thread-4", ))
+#thread5 = Process(target=thread_function5, args=("Thread-5", ))
+
+#thread1.start()
+#thread2.start()
+#thread3.start()
+#thread4.start()
+#thread5.start()
+#thread1.join()
+#thread2.join()
+#thread3.join()
+#thread4.join()
+#thread5.join()
 
 print("After calling plot functions");
 timeF = datetime.now()
@@ -468,21 +483,21 @@ print("Type temperature_fig");
 print(type(temperature_fig)) 
 
 print("Type new_temperature_fig");
-new_temperature_fig = q.get()
-new_humidity_fig = q.get()
-new_temp_and_hum_fig = q.get()
-new_CO2_fig = q.get()
-print(type(new_temperature_fig)) 
+#new_temperature_fig = q.get()
+#new_humidity_fig = q.get()
+#new_temp_and_hum_fig = q.get()
+#new_CO2_fig = q.get()
+#print(type(new_temperature_fig)) 
 
-print("Type humidity_fig");
-print(type(humidity_fig)) 
-print("Type temp_and_hum_fig");
-print(type(temp_and_hum_fig)) 
-print("Type CO2_fig");
-print(type(CO2_fig)) 
+print("Type new_load_cell_voltages_fig");
+print(type(new_load_cell_voltages_fig)) 
+print("Type new_load_cell_voltages_ac_fig");
+print(type(new_load_cell_voltages_ac_fig)) 
+print("Type new_voltages_temperature_means_fig");
+print(type(new_voltages_temperature_means_fig)) 
 
-l1 = layout([[new_temperature_fig, new_humidity_fig], [new_temp_and_hum_fig, new_CO2_fig]], sizing_mode='fixed')
-#l2 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
+#l1 = layout([[new_temperature_fig, new_humidity_fig], [new_temp_and_hum_fig, new_CO2_fig]], sizing_mode='fixed')
+l1 = layout([[load_cell_voltages_fig, weight_fig], [load_cell_voltages_ac_fig, voltages_temperature_means_fig]], sizing_mode='fixed')
 
 #l1 = layout([[temperature_fig]], sizing_mode='fixed')
 l2 = layout([[newfig]], sizing_mode='fixed')
